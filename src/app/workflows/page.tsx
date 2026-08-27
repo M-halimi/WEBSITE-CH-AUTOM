@@ -12,7 +12,11 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Automation Blueprints Catalog — AutoFlows Hub",
   description:
+<<<<<<< HEAD
     "Browse and filter our comprehensive collection of commerce and business automation blueprints.",
+=======
+    "Browse and filter our comprehensive collection of business automation workflows and blueprints.",
+>>>>>>> 7ee9ca6f04322930ec29228c493ddb72ee250ce5
 };
 
 interface WorkflowsPageProps {
@@ -95,6 +99,7 @@ export default async function WorkflowsCatalogPage({
   const totalPages = Math.ceil(totalCount / pageSize);
 
   return (
+<<<<<<< HEAD
     <div className="bg-background text-foreground min-h-screen transition-colors duration-300">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-10 sm:py-14 space-y-10">
         {/* Page Header */}
@@ -108,6 +113,18 @@ export default async function WorkflowsCatalogPage({
             </h1>
             <p className="text-xs sm:text-sm text-muted-foreground mt-2">
               Showing <strong className="text-foreground font-semibold">{totalCount}</strong> verified blueprints ready for immediate deployment.
+=======
+    <div className="bg-white text-[#222222] min-h-screen">
+      <div className="max-w-[1340px] mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">
+        {/* Page Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-[#e6e6e6]">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#222222]">
+              All Automation Blueprints
+            </h1>
+            <p className="text-xs sm:text-sm text-[#595959] mt-1">
+              Showing <strong className="text-[#222222]">{totalCount}</strong> verified workflow blueprints ready for deployment.
+>>>>>>> 7ee9ca6f04322930ec29228c493ddb72ee250ce5
             </p>
           </div>
 
@@ -115,16 +132,28 @@ export default async function WorkflowsCatalogPage({
             <Button
               variant="outline"
               size="sm"
+<<<<<<< HEAD
               className="gap-2 text-xs font-bold rounded-full border border-border hover:bg-muted text-foreground"
             >
               <Sparkles className="h-3.5 w-3.5 text-[#ffd233]" />
               <span>Request Custom Blueprint</span>
+=======
+              className="gap-2 text-xs font-semibold rounded-full border-[#222222]"
+            >
+              <Sparkles className="h-3.5 w-3.5 text-[#f1641e]" />
+              <span>Request Custom Workflow</span>
+>>>>>>> 7ee9ca6f04322930ec29228c493ddb72ee250ce5
             </Button>
           </Link>
         </div>
 
+<<<<<<< HEAD
         {/* Filter Toolbar */}
         <Suspense fallback={<div className="h-32 rounded-3xl bg-muted animate-pulse" />}>
+=======
+        {/* Filter Toolbar with Suspense */}
+        <Suspense fallback={<div className="h-32 rounded-[8px] bg-[#f6f6f6] animate-pulse" />}>
+>>>>>>> 7ee9ca6f04322930ec29228c493ddb72ee250ce5
           <WorkflowFilters
             categories={categories}
             platforms={platforms}
@@ -138,6 +167,7 @@ export default async function WorkflowsCatalogPage({
 
         {/* Workflows Grid or Empty State */}
         {workflows.length > 0 ? (
+<<<<<<< HEAD
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {workflows.map((workflow, idx) => (
               <WorkflowCard 
@@ -156,6 +186,22 @@ export default async function WorkflowsCatalogPage({
               No blueprints found
             </h3>
             <p className="text-xs text-muted-foreground leading-relaxed">
+=======
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+            {workflows.map((workflow) => (
+              <WorkflowCard key={workflow.id} workflow={workflow} />
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-[8px] border border-[#d6d6d6] bg-[#fdf6e8]/40 p-12 text-center max-w-lg mx-auto space-y-4">
+            <div className="mx-auto h-12 w-12 rounded-full bg-[#fdf6e8] flex items-center justify-center text-[#a66523]">
+              <AlertCircle className="h-6 w-6" />
+            </div>
+            <h3 className="text-base font-semibold text-[#222222]">
+              No blueprints found
+            </h3>
+            <p className="text-xs text-[#595959] leading-relaxed">
+>>>>>>> 7ee9ca6f04322930ec29228c493ddb72ee250ce5
               We couldn&apos;t find any automation matching your current filter criteria.
             </p>
             <div className="pt-2 flex justify-center gap-3">
@@ -165,8 +211,13 @@ export default async function WorkflowsCatalogPage({
                 </Button>
               </Link>
               <Link href="/request">
+<<<<<<< HEAD
                 <Button variant="outline" size="sm" className="rounded-full border border-border">
                   Request Custom Build
+=======
+                <Button variant="secondary" size="sm">
+                  Request This Automation
+>>>>>>> 7ee9ca6f04322930ec29228c493ddb72ee250ce5
                 </Button>
               </Link>
             </div>
@@ -175,7 +226,11 @@ export default async function WorkflowsCatalogPage({
 
         {/* Pagination */}
         {totalPages > 1 && (
+<<<<<<< HEAD
           <div className="flex items-center justify-center gap-2 pt-8 border-t border-border">
+=======
+          <div className="flex items-center justify-center gap-2 pt-8 border-t border-[#e6e6e6]">
+>>>>>>> 7ee9ca6f04322930ec29228c493ddb72ee250ce5
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
               const params = new URLSearchParams();
               if (q) params.set("q", q);
@@ -190,11 +245,15 @@ export default async function WorkflowsCatalogPage({
                   <Button
                     variant={p === page ? "default" : "ghost"}
                     size="sm"
+<<<<<<< HEAD
                     className={`w-10 h-10 p-0 text-xs font-bold rounded-full ${
                       p === page
                         ? "bg-[#ffd233] text-black shadow-xs"
                         : "border border-border text-foreground hover:bg-muted"
                     }`}
+=======
+                    className="w-10 h-10 p-0 text-xs font-semibold rounded-full"
+>>>>>>> 7ee9ca6f04322930ec29228c493ddb72ee250ce5
                   >
                     {p}
                   </Button>

@@ -1,7 +1,11 @@
 "use client";
 
 import * as React from "react";
+<<<<<<< HEAD
 import { MessageSquare, Sparkles, Share2, Check, Download, Zap } from "lucide-react";
+=======
+import { MessageSquare, Sparkles, Share2, Check, Download } from "lucide-react";
+>>>>>>> 7ee9ca6f04322930ec29228c493ddb72ee250ce5
 import { Button } from "@/components/ui/button";
 import { LeadFormModal } from "./LeadFormModal";
 import { generateWhatsAppLink } from "@/lib/whatsapp";
@@ -33,17 +37,26 @@ export function WorkflowDetailActions({ workflow }: WorkflowDetailActionsProps) 
 
   return (
     <>
+<<<<<<< HEAD
       <div className="flex flex-col gap-3 w-full">
         {/* 1. Full-Width Primary Action Button */}
         <Button
           size="lg"
           onClick={() => setModalOpen(true)}
           className="w-full h-12 rounded-full font-bold bg-[#ffd233] hover:bg-[#f5c71a] text-black text-sm shadow-xs gap-2 transition-transform active:scale-98"
+=======
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full">
+        <Button
+          size="lg"
+          onClick={() => setModalOpen(true)}
+          className="flex-1 rounded-full font-semibold bg-[#f1641e] hover:bg-[#d44e0d] text-white text-sm h-12 shadow-sm gap-2"
+>>>>>>> 7ee9ca6f04322930ec29228c493ddb72ee250ce5
         >
           <Zap className="h-4 w-4 fill-current" />
           <span>Deploy This Blueprint</span>
         </Button>
 
+<<<<<<< HEAD
         {/* 2. Secondary Actions Row (WhatsApp + Share) */}
         <div className="flex items-center gap-2.5 w-full">
           <a href={waLink} target="_blank" rel="noopener noreferrer" className="flex-1">
@@ -68,6 +81,24 @@ export function WorkflowDetailActions({ workflow }: WorkflowDetailActionsProps) 
             {copied ? <Check className="h-4 w-4 text-emerald-600" /> : <Share2 className="h-4 w-4" />}
           </Button>
         </div>
+=======
+        <a href={waLink} target="_blank" rel="noopener noreferrer" className="flex-1">
+          <Button variant="secondary" size="lg" className="w-full rounded-full font-semibold text-sm h-12 gap-2 bg-white hover:bg-[#f6f6f6] text-[#222222] border border-[#bdbdbd]">
+            <MessageSquare className="h-4 w-4 text-[#f1641e]" />
+            WhatsApp Inquiry
+          </Button>
+        </a>
+
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={handleShare}
+          className="h-12 w-12 rounded-full border-[#bdbdbd] hover:bg-[#f6f6f6] shrink-0 text-[#222222]"
+          title="Share blueprint"
+        >
+          {copied ? <Check className="h-4 w-4 text-[#258635]" /> : <Share2 className="h-4 w-4" />}
+        </Button>
+>>>>>>> 7ee9ca6f04322930ec29228c493ddb72ee250ce5
       </div>
 
       <LeadFormModal
