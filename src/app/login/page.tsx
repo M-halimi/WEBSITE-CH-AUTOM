@@ -1,15 +1,9 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  ShieldCheck,
-  Lock,
-  Mail,
-  Loader2,
-  ArrowRight,
-  Zap,
-} from "lucide-react";
+import { Zap, Lock, ShieldCheck, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { adminLogin } from "@/actions/authActions";
@@ -24,7 +18,9 @@ export default function LoginPage() {
     setPending(true);
     setErrorMessage(null);
 
-    const formData = new FormData(e.currentTarget);
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
     const res = await adminLogin(formData);
     setPending(false);
 
@@ -32,93 +28,82 @@ export default function LoginPage() {
       router.push("/admin");
       router.refresh();
     } else {
-      setErrorMessage(res.error || "Authentication failed.");
+      setErrorMessage(res.error || "Invalid credentials.");
     }
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
+    <div className="min-h-[80vh] flex items-center justify-center p-4 bg-black text-white">
       <div className="w-full max-w-md space-y-6">
         <div className="text-center space-y-2">
-          <div className="mx-auto h-12 w-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white shadow-lg shadow-emerald-500/20 mb-3">
-            <ShieldCheck className="h-6 w-6" />
-          </div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-foreground">
-            Admin Authentication
-          </h1>
-          <p className="text-xs text-muted-foreground">
-            Sign in to manage workflows, import n8n blueprints, and review
-            leads.
-          </p>
+          <Link href="/" className="inline-flex items-center gap-2 group">
+            <div className="h-10 w-10 rounded-[8px] bg-[#e50914] flex items-center justify-center text-white font-black text-xl">
+              <Zap className="h-6 w-6 fill-current" />
+            </div>
+            <span className="font-black text-2xl tracking-tighter text-[#e50914] uppercase">
+              AUTOFLOWS
+            </span>
+          </Link>
+          <h1 className="text-2xl sm:text-3xl font-black text-white uppercase">Admin Sign In</h1>
+          <p className="text-xs text-[#808080]">Enter administrator credentials to manage catalog and CRM leads.</p>
         </div>
 
-        <div className="rounded-3xl border border-border bg-card p-6 sm:p-8 shadow-xl">
+        <div className="rounded-[8px] border border-[#414141] bg-[#232323] p-6 sm:p-8 space-y-6">
           {errorMessage && (
-            <div className="mb-4 p-3 rounded-lg bg-destructive/10 border border-destructive/30 text-destructive text-xs font-medium">
+            <div className="p-3 rounded-[8px] bg-[#e50914]/10 border border-[#e50914] text-[#e50914] text-xs font-medium text-center">
               {errorMessage}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="text-xs font-semibold text-foreground block mb-1">
-                Admin Email
+              <label className="text-xs font-medium text-white block mb-1.5">
+                Admin Email Address
               </label>
-              <div className="relative">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  required
-                  type="email"
-                  name="email"
-                  defaultValue="admin@workflows.com"
-                  placeholder="admin@workflows.com"
-                  className="pl-10 h-11 text-sm"
-                />
-              </div>
+              <Input
+                required
+                type="email"
+                name="email"
+                defaultValue="admin@workflows.com"
+                className="h-12"
+              />
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-foreground block mb-1">
-                Password
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  required
-                  type="password"
-                  name="password"
-                  defaultValue="admin123456"
-                  placeholder="••••••••"
-                  className="pl-10 h-11 text-sm"
-                />
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="text-xs font-medium text-white">
+                  Password
+                </label>
               </div>
-              <p className="text-[11px] text-muted-foreground mt-1.5">
-                Default demo seed:{" "}
-                <code className="text-primary font-mono">
-                  admin@workflows.com
-                </code>{" "}
-                / <code className="text-primary font-mono">admin123456</code>
-              </p>
+              <Input
+                required
+                type="password"
+                name="password"
+                defaultValue="admin123456"
+                className="h-12"
+              />
             </div>
 
             <Button
               type="submit"
               disabled={pending}
-              className="w-full h-11 font-bold bg-primary text-primary-foreground hover:bg-primary/90 mt-2 gap-2"
+              className="w-full h-12 text-sm font-semibold rounded-[8px] bg-[#e50914] hover:bg-[#c11119] text-white mt-2"
             >
               {pending ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  Verifying...
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  Verifying Session...
                 </>
               ) : (
-                <>
-                  <span>Sign In to Admin</span>
-                  <ArrowRight className="h-4 w-4" />
-                </>
+                "Sign In"
               )}
             </Button>
           </form>
+
+          <div className="p-3 rounded-[8px] bg-[#161616] border border-[#414141] text-[11px] text-[#808080] flex items-center gap-2">
+            <Lock className="h-3.5 w-3.5 text-[#e50914] shrink-0" />
+            <span>Default Seed: admin@workflows.com / admin123456</span>
+          </div>
         </div>
       </div>
     </div>

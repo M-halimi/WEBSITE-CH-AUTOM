@@ -3,36 +3,33 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const badgeVariants = cva(
-  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  "inline-flex items-center rounded-[6px] border px-2.5 py-0.5 text-xs font-medium transition-colors focus:outline-none",
   {
     variants: {
       variant: {
         default:
-          "border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80",
+          "border-[#414141] bg-[#232323] text-white",
         secondary:
-          "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
+          "border-[#414141] bg-[#161616] text-[#808080]",
         destructive:
-          "border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80",
-        outline: "text-foreground",
-        success:
-          "border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
-        warning:
-          "border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400",
-        info: "border-sky-500/30 bg-sky-500/10 text-sky-600 dark:text-sky-400",
-        purple:
-          "border-purple-500/30 bg-purple-500/10 text-purple-600 dark:text-purple-400",
-        glow: "border-emerald-500/30 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 shadow-sm shadow-emerald-500/20",
+          "border-[#e50914] bg-[#e50914] text-white",
+        outline: "border-[#414141] bg-transparent text-white",
+        success: "border-[#414141] bg-[#232323] text-white",
+        warning: "border-[#414141] bg-[#232323] text-[#808080]",
+        info: "border-[#414141] bg-[#232323] text-white",
+        purple: "border-[#414141] bg-[#232323] text-white",
+        glow: "border-[#e50914] bg-[#e50914] text-white font-bold",
+        red: "border-[#e50914] bg-[#e50914] text-white font-bold",
       },
     },
     defaultVariants: {
       variant: "default",
     },
-  },
+  }
 );
 
 export interface BadgeProps
-  extends
-    React.HTMLAttributes<HTMLDivElement>,
+  extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof badgeVariants> {}
 
 function Badge({ className, variant, ...props }: BadgeProps) {

@@ -1,13 +1,11 @@
 import Link from "next/link";
-import {
-  Zap,
-  Layers,
-  Clock,
-  ArrowRight,
-  Eye,
-  CheckCircle2,
+import { 
+  Layers, 
+  Clock, 
+  ArrowRight, 
+  Eye, 
   Flame,
-  MessageSquare,
+  Zap
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -43,57 +41,41 @@ interface WorkflowCardProps {
       appName?: string | null;
     }[];
   };
+  rank?: number;
 }
 
-export function WorkflowCard({ workflow }: WorkflowCardProps) {
-  const getDifficultyBadge = (difficulty: string) => {
-    switch (difficulty.toUpperCase()) {
-      case "BEGINNER":
-        return <Badge variant="success">Beginner</Badge>;
-      case "INTERMEDIATE":
-        return <Badge variant="warning">Intermediate</Badge>;
-      case "ADVANCED":
-        return <Badge variant="destructive">Advanced</Badge>;
-      default:
-        return <Badge variant="secondary">{difficulty}</Badge>;
-    }
-  };
-
+export function WorkflowCard({ workflow, rank }: WorkflowCardProps) {
   return (
-    <div className="group relative flex flex-col justify-between rounded-2xl border border-border bg-card p-6 shadow-sm hover:shadow-xl hover:border-primary/40 hover:-translate-y-1 transition-all duration-300">
+    <div className="group relative flex flex-col justify-between rounded-[8px] border border-[#414141] bg-[#232323] p-6 transition-colors duration-200 hover:border-[#808080]">
       <div>
         {/* Top Badges */}
         <div className="flex items-center justify-between gap-2 mb-4">
           <div className="flex items-center gap-1.5 flex-wrap">
             {workflow.featured && (
-              <Badge
-                variant="glow"
-                className="bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 gap-1 font-semibold"
-              >
-                <Flame className="h-3 w-3 fill-current" /> Featured
-              </Badge>
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[4px] text-[11px] font-bold bg-[#e50914] text-white">
+                <Flame className="h-3 w-3 fill-current" /> TOP
+              </span>
             )}
             {workflow.category && (
-              <Badge variant="outline" className="text-xs bg-muted/40">
+              <span className="inline-flex items-center px-2 py-0.5 rounded-[4px] text-[11px] font-medium bg-[#161616] text-[#808080] border border-[#414141]">
                 {workflow.category.name}
-              </Badge>
+              </span>
             )}
           </div>
-          <div>{getDifficultyBadge(workflow.difficulty)}</div>
+          <span className="text-[11px] uppercase tracking-wider text-[#808080] font-medium">
+            {workflow.difficulty}
+          </span>
         </div>
 
         {/* Title */}
-        <Link
-          href={`/workflows/${workflow.slug}`}
-          className="block group-hover:text-primary transition-colors"
-        >
-          <h3 className="text-lg font-bold tracking-tight text-foreground leading-snug line-clamp-2 mb-2">
+        <Link href={`/workflows/${workflow.slug}`} className="block group-hover:text-[#e50914] transition-colors">
+          <h3 className="text-lg font-medium tracking-tight text-white leading-snug line-clamp-2 mb-2">
             {workflow.title}
           </h3>
         </Link>
 
         {/* Summary */}
-        <p className="text-xs text-muted-foreground line-clamp-3 leading-relaxed mb-5">
+        <p className="text-xs text-[#808080] line-clamp-3 leading-relaxed mb-5">
           {workflow.summary}
         </p>
 
@@ -103,7 +85,7 @@ export function WorkflowCard({ workflow }: WorkflowCardProps) {
             {workflow.platforms.map(({ platform }) => (
               <span
                 key={platform.id}
-                className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-medium bg-muted text-muted-foreground border border-border/60"
+                className="inline-flex items-center px-2 py-0.5 rounded-[4px] text-[11px] font-normal bg-[#161616] text-white border border-[#414141]"
               >
                 {platform.name}
               </span>
@@ -113,14 +95,11 @@ export function WorkflowCard({ workflow }: WorkflowCardProps) {
       </div>
 
       {/* Footer info & CTA */}
-      <div className="pt-4 border-t border-border/60 mt-auto">
-        <div className="flex items-center justify-between text-xs text-muted-foreground mb-4">
+      <div className="pt-4 border-t border-[#414141] mt-auto">
+        <div className="flex items-center justify-between text-xs text-[#808080] mb-4">
           <span className="flex items-center gap-1">
-            <Layers className="h-3.5 w-3.5 text-primary" />
-            <strong className="text-foreground">
-              {workflow.stepsCount || workflow.steps?.length || 0}
-            </strong>{" "}
-            Steps
+            <Layers className="h-3.5 w-3.5 text-[#e50914]" />
+            <strong className="text-white">{workflow.stepsCount || workflow.steps?.length || 0}</strong> Steps
           </span>
           <span className="flex items-center gap-1">
             <Clock className="h-3.5 w-3.5" />
@@ -132,18 +111,12 @@ export function WorkflowCard({ workflow }: WorkflowCardProps) {
           </span>
         </div>
 
-        <div className="flex items-center gap-2">
-          <Link href={`/workflows/${workflow.slug}`} className="flex-1">
-            <Button
-              variant="default"
-              size="sm"
-              className="w-full justify-between group-hover:bg-primary/90 text-xs"
-            >
-              <span>View Workflow</span>
-              <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
-            </Button>
-          </Link>
-        </div>
+        <Link href={`/workflows/${workflow.slug}`} className="block w-full">
+          <Button variant="default" size="sm" className="w-full justify-between font-medium text-xs rounded-[8px]">
+            <span>Explore Workflow</span>
+            <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+          </Button>
+        </Link>
       </div>
     </div>
   );

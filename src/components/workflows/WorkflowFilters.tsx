@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { Search, Filter, X, ArrowUpDown, SlidersHorizontal } from "lucide-react";
+import { Search, X, ArrowUpDown, SlidersHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface WorkflowFiltersProps {
@@ -37,7 +37,6 @@ export function WorkflowFilters({
     } else {
       params.delete(key);
     }
-    // reset page to 1 on filter change
     params.delete("page");
     router.push(`${pathname}?${params.toString()}`);
   };
@@ -61,22 +60,22 @@ export function WorkflowFilters({
   );
 
   return (
-    <div className="space-y-4 rounded-2xl border border-border bg-card p-5 sm:p-6 shadow-sm">
+    <div className="space-y-4 rounded-[8px] border border-[#414141] bg-[#232323] p-5 sm:p-6">
       {/* Top Search & Sort Row */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
         <form onSubmit={handleSearchSubmit} className="relative flex-1">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#808080]" />
           <input
             type="text"
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Search by title, description, node type..."
-            className="w-full h-11 pl-10 pr-24 rounded-xl border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary transition-all placeholder:text-muted-foreground"
+            className="w-full h-11 pl-10 pr-24 rounded-[8px] border border-[#414141] bg-[#2d2d2d] text-sm text-white focus:outline-none focus:border-white transition-colors placeholder:text-[#808080]"
           />
           <Button
             type="submit"
             size="sm"
-            className="absolute right-1.5 top-1/2 -translate-y-1/2 h-8 text-xs font-semibold px-3"
+            className="absolute right-1.5 top-1/2 -translate-y-1/2 h-8 text-xs font-semibold px-4 rounded-[6px] bg-[#e50914] text-white hover:bg-[#c11119]"
           >
             Search
           </Button>
@@ -84,32 +83,32 @@ export function WorkflowFilters({
 
         {/* Sort selector */}
         <div className="flex items-center gap-2 min-w-[200px]">
-          <ArrowUpDown className="h-4 w-4 text-muted-foreground hidden sm:inline" />
+          <ArrowUpDown className="h-4 w-4 text-[#808080] hidden sm:inline" />
           <select
             value={selectedSort}
             onChange={(e) => updateParam("sort", e.target.value)}
             aria-label="Sort workflows"
-            className="h-11 w-full rounded-xl border border-input bg-background px-3 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-primary"
+            className="h-11 w-full rounded-[8px] border border-[#414141] bg-[#2d2d2d] px-3 text-xs font-medium text-white focus:outline-none focus:border-white"
           >
-            <option value="newest">✨ Sort: Newest First</option>
-            <option value="popular">🔥 Sort: Most Popular</option>
-            <option value="steps">⚡ Sort: Most Steps</option>
+            <option value="newest">Sort: Newest First</option>
+            <option value="popular">Sort: Most Popular</option>
+            <option value="steps">Sort: Most Steps</option>
           </select>
         </div>
       </div>
 
-      {/* Filter Badges & Dropdowns */}
-      <div className="pt-2 border-t border-border/60 grid grid-cols-1 sm:grid-cols-3 gap-3">
+      {/* Filter Dropdowns */}
+      <div className="pt-3 border-t border-[#414141] grid grid-cols-1 sm:grid-cols-3 gap-3">
         {/* Category Filter */}
         <div>
-          <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block mb-1.5">
+          <label className="text-[11px] font-medium uppercase tracking-wider text-[#808080] block mb-1.5">
             Category
           </label>
           <select
             value={selectedCategory}
             onChange={(e) => updateParam("category", e.target.value)}
             aria-label="Filter by category"
-            className="h-10 w-full rounded-lg border border-input bg-background px-3 text-xs focus:outline-none focus:ring-2 focus:ring-primary"
+            className="h-10 w-full rounded-[8px] border border-[#414141] bg-[#2d2d2d] px-3 text-xs text-white focus:outline-none focus:border-white"
           >
             <option value="">All Categories</option>
             {categories.map((c) => (
@@ -122,14 +121,14 @@ export function WorkflowFilters({
 
         {/* Platform Filter */}
         <div>
-          <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block mb-1.5">
+          <label className="text-[11px] font-medium uppercase tracking-wider text-[#808080] block mb-1.5">
             Platform / Engine
           </label>
           <select
             value={selectedPlatform}
             onChange={(e) => updateParam("platform", e.target.value)}
             aria-label="Filter by platform"
-            className="h-10 w-full rounded-lg border border-input bg-background px-3 text-xs focus:outline-none focus:ring-2 focus:ring-primary"
+            className="h-10 w-full rounded-[8px] border border-[#414141] bg-[#2d2d2d] px-3 text-xs text-white focus:outline-none focus:border-white"
           >
             <option value="">All Platforms</option>
             {platforms.map((p) => (
@@ -142,33 +141,33 @@ export function WorkflowFilters({
 
         {/* Difficulty Filter */}
         <div>
-          <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block mb-1.5">
+          <label className="text-[11px] font-medium uppercase tracking-wider text-[#808080] block mb-1.5">
             Difficulty Level
           </label>
           <select
             value={selectedDifficulty}
             onChange={(e) => updateParam("difficulty", e.target.value)}
             aria-label="Filter by difficulty"
-            className="h-10 w-full rounded-lg border border-input bg-background px-3 text-xs focus:outline-none focus:ring-2 focus:ring-primary"
+            className="h-10 w-full rounded-[8px] border border-[#414141] bg-[#2d2d2d] px-3 text-xs text-white focus:outline-none focus:border-white"
           >
             <option value="">All Difficulties</option>
-            <option value="BEGINNER">Beginner (Quick 15 min setup)</option>
-            <option value="INTERMEDIATE">Intermediate (Standard API/Webhook)</option>
-            <option value="ADVANCED">Advanced (Multi-agent / AI)</option>
+            <option value="BEGINNER">Beginner (15 min setup)</option>
+            <option value="INTERMEDIATE">Intermediate (Standard Webhooks)</option>
+            <option value="ADVANCED">Advanced (Multi-Agent / AI)</option>
           </select>
         </div>
       </div>
 
       {/* Active filters bar & Clear button */}
       {hasActiveFilters && (
-        <div className="flex items-center justify-between pt-2 border-t border-border/40 text-xs text-muted-foreground">
+        <div className="flex items-center justify-between pt-2 border-t border-[#414141] text-xs text-[#808080]">
           <span className="flex items-center gap-1.5">
-            <SlidersHorizontal className="h-3.5 w-3.5 text-primary" />
+            <SlidersHorizontal className="h-3.5 w-3.5 text-[#e50914]" />
             Filters active
           </span>
           <button
             onClick={clearAllFilters}
-            className="text-xs text-destructive hover:underline font-medium flex items-center gap-1"
+            className="text-xs text-[#e50914] hover:underline font-medium flex items-center gap-1"
           >
             <X className="h-3.5 w-3.5" />
             Reset all filters
@@ -178,4 +177,3 @@ export function WorkflowFilters({
     </div>
   );
 }
-

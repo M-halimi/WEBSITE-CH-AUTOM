@@ -14,9 +14,7 @@ interface WorkflowDetailActionsProps {
   };
 }
 
-export function WorkflowDetailActions({
-  workflow,
-}: WorkflowDetailActionsProps) {
+export function WorkflowDetailActions({ workflow }: WorkflowDetailActionsProps) {
   const [modalOpen, setModalOpen] = React.useState(false);
   const [copied, setCopied] = React.useState(false);
 
@@ -39,19 +37,15 @@ export function WorkflowDetailActions({
         <Button
           size="lg"
           onClick={() => setModalOpen(true)}
-          className="rounded-xl font-bold bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 shadow-lg shadow-emerald-500/25 text-sm gap-2"
+          className="rounded-[8px] font-medium bg-[#e50914] hover:bg-[#c11119] text-white text-base px-6 gap-2"
         >
           <Sparkles className="h-4 w-4" />
           Get This Automation
         </Button>
 
         <a href={waLink} target="_blank" rel="noopener noreferrer">
-          <Button
-            variant="whatsapp"
-            size="lg"
-            className="rounded-xl font-semibold text-sm gap-2"
-          >
-            <MessageSquare className="h-4 w-4" />
+          <Button variant="secondary" size="lg" className="rounded-[8px] font-medium text-base gap-2 bg-[#232323] hover:bg-[#2d2d2d] text-white">
+            <MessageSquare className="h-4 w-4 text-[#e50914]" />
             Contact on WhatsApp
           </Button>
         </a>
@@ -60,14 +54,10 @@ export function WorkflowDetailActions({
           variant="outline"
           size="lg"
           onClick={handleShare}
-          className="rounded-xl text-xs gap-1.5"
+          className="rounded-[8px] text-xs gap-1.5 border-[#414141] hover:bg-[#232323]"
           title="Share workflow link"
         >
-          {copied ? (
-            <Check className="h-4 w-4 text-emerald-500" />
-          ) : (
-            <Share2 className="h-4 w-4" />
-          )}
+          {copied ? <Check className="h-4 w-4 text-[#e50914]" /> : <Share2 className="h-4 w-4" />}
           <span>{copied ? "Link Copied!" : "Share"}</span>
         </Button>
       </div>

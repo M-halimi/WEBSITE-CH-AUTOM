@@ -1,17 +1,15 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import {
-  Layers,
-  Clock,
-  Eye,
-  CheckCircle2,
-  ChevronRight,
-  Zap,
-  Sparkles,
-  ArrowLeft,
+import { 
+  Clock, 
+  Eye, 
+  CheckCircle2, 
+  ChevronRight, 
+  Zap, 
+  Sparkles, 
   ShieldCheck,
-  Cpu,
+  Cpu
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { Badge } from "@/components/ui/badge";
@@ -20,15 +18,15 @@ import { WorkflowViewer } from "@/components/workflows/WorkflowViewer";
 import { WorkflowDetailActions } from "@/components/workflows/WorkflowDetailActions";
 import { WorkflowCard } from "@/components/workflows/WorkflowCard";
 
+export const dynamic = "force-dynamic";
+
 interface WorkflowDetailPageProps {
   params: {
     slug: string;
   };
 }
 
-export async function generateMetadata({
-  params,
-}: WorkflowDetailPageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: WorkflowDetailPageProps): Promise<Metadata> {
   const workflow = await prisma.workflow.findUnique({
     where: { slug: params.slug },
     include: { category: true },
@@ -48,9 +46,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function WorkflowDetailPage({
-  params,
-}: WorkflowDetailPageProps) {
+export default async function WorkflowDetailPage({ params }: WorkflowDetailPageProps) {
   const workflow = await prisma.workflow.findUnique({
     where: { slug: params.slug },
     include: {
@@ -64,14 +60,6 @@ export default async function WorkflowDetailPage({
   if (!workflow) {
     notFound();
   }
-
-  // Increment views count asynchronously in background
-  await prisma.workflow
-    .update({
-      where: { id: workflow.id },
-      data: { views: { increment: 1 } },
-    })
-    .catch(() => {});
 
   // Fetch related workflows in the same category
   const relatedWorkflows = await prisma.workflow.findMany({
@@ -98,236 +86,203 @@ export default async function WorkflowDetailPage({
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-12">
-      {/* Breadcrumb navigation */}
-      <nav className="flex items-center gap-1.5 text-xs text-muted-foreground flex-wrap">
-        <Link href="/" className="hover:text-foreground">
-          Home
-        </Link>
-        <ChevronRight className="h-3.5 w-3.5 opacity-50" />
-        <Link href="/workflows" className="hover:text-foreground">
-          Workflows
-        </Link>
-        {workflow.category && (
-          <>
-            <ChevronRight className="h-3.5 w-3.5 opacity-50" />
-            <Link
-              href={`/workflows?category=${workflow.category.slug}`}
-              className="hover:text-foreground"
-            >
-              {workflow.category.name}
-            </Link>
-          </>
-        )}
-        <ChevronRight className="h-3.5 w-3.5 opacity-50" />
-        <span className="text-foreground font-medium truncate max-w-xs">
-          {workflow.title}
-        </span>
-      </nav>
-
-      {/* 1. HEADER SECTION */}
-      <div className="rounded-3xl border border-border bg-card p-6 sm:p-10 shadow-sm relative overflow-hidden">
-        <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-8">
-          <div className="space-y-4 max-w-3xl">
-            {/* Meta Tags */}
-            <div className="flex items-center gap-2 flex-wrap">
-              {workflow.category && (
-                <Badge variant="outline" className="bg-muted/50 text-xs">
-                  {workflow.category.name}
-                </Badge>
-              )}
-              <Badge variant="success" className="text-xs">
-                {workflow.difficulty} Level
-              </Badge>
-              <span className="text-xs text-muted-foreground flex items-center gap-1">
-                <Clock className="h-3.5 w-3.5" />
-                {workflow.estimatedTime}
-              </span>
-              <span className="text-xs text-muted-foreground flex items-center gap-1">
-                <Eye className="h-3.5 w-3.5" />
-                {workflow.views + 1} views
-              </span>
-            </div>
-
-            {/* Title */}
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-foreground leading-tight">
-              {workflow.title}
-            </h1>
-
-            {/* Summary */}
-            <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-              {workflow.summary}
-            </p>
-
-            {/* Platforms & Engines */}
-            {workflow.platforms.length > 0 && (
-              <div className="flex items-center gap-2 flex-wrap pt-2">
-                <span className="text-xs font-semibold text-muted-foreground">
-                  Platforms:
-                </span>
-                {workflow.platforms.map(({ platform }) => (
-                  <Badge
-                    key={platform.id}
-                    variant="secondary"
-                    className="text-xs font-medium"
-                  >
-                    {platform.name}
-                  </Badge>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Pricing & CTA Column */}
-          <div className="lg:w-80 flex flex-col gap-4 rounded-2xl border border-border/80 bg-background/60 p-6 shadow-sm">
-            <div>
-              <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wider block mb-1">
-                Pricing / License
-              </span>
-              <div className="text-2xl font-bold text-foreground flex items-center gap-2">
-                <span>{workflow.price || "Free Template"}</span>
-              </div>
-              <p className="text-[11px] text-muted-foreground mt-1">
-                Includes ready JSON template, node schema, and setup guide.
-              </p>
-            </div>
-
-            <div className="pt-2 border-t border-border">
-              <WorkflowDetailActions workflow={workflow} />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 2. MAIN GRID (Left: Flow Viewer & Steps; Right: Specs & Requirements) */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Column (2 Cols wide) */}
-        <div className="lg:col-span-2 space-y-10">
-          {/* Visual Step-by-Step Flow Viewer */}
-          <section className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2">
-                <Zap className="h-5 w-5 text-amber-500" />
-                Workflow Pipeline Viewer
-              </h2>
-              <Badge variant="outline" className="text-xs">
-                {workflow.steps.length} Steps
-              </Badge>
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Sequential execution diagram showing how data moves across
-              triggers, actions, and services.
-            </p>
-
-            <div className="pt-4">
-              <WorkflowViewer
-                steps={workflow.steps}
-                workflowTitle={workflow.title}
-              />
-            </div>
-          </section>
-
-          {/* Overview & Description Markdown */}
-          <section className="rounded-2xl border border-border bg-card p-6 sm:p-8 space-y-4">
-            <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-primary" />
-              Detailed Specifications & Use Cases
-            </h2>
-            <div className="prose dark:prose-invert max-w-none text-sm text-muted-foreground whitespace-pre-line leading-relaxed">
-              {workflow.description}
-            </div>
-          </section>
-        </div>
-
-        {/* Right Column: Requirements, Triggers & Value */}
-        <div className="space-y-6">
-          {/* Triggers & Outcomes */}
-          <div className="rounded-2xl border border-border bg-card p-6 space-y-4">
-            <h3 className="text-sm font-bold uppercase tracking-wider text-foreground flex items-center gap-2">
-              <Cpu className="h-4 w-4 text-emerald-500" />
-              Trigger & Outcome
-            </h3>
-
-            {workflow.triggersDescription && (
-              <div className="space-y-1 text-xs">
-                <strong className="text-foreground block">
-                  When Triggered:
-                </strong>
-                <p className="text-muted-foreground leading-relaxed">
-                  {workflow.triggersDescription}
-                </p>
-              </div>
-            )}
-
-            {workflow.outcomesDescription && (
-              <div className="space-y-1 text-xs pt-2 border-t border-border">
-                <strong className="text-foreground block">Result:</strong>
-                <p className="text-muted-foreground leading-relaxed">
-                  {workflow.outcomesDescription}
-                </p>
-              </div>
-            )}
-          </div>
-
-          {/* Pre-requisites & Requirements */}
-          {requirementsList.length > 0 && (
-            <div className="rounded-2xl border border-border bg-card p-6 space-y-4">
-              <h3 className="text-sm font-bold uppercase tracking-wider text-foreground flex items-center gap-2">
-                <ShieldCheck className="h-4 w-4 text-primary" />
-                Required Accounts / Tools
-              </h3>
-              <ul className="space-y-2.5">
-                {requirementsList.map((req, idx) => (
-                  <li
-                    key={idx}
-                    className="flex items-start gap-2 text-xs text-muted-foreground"
-                  >
-                    <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
-                    <span>{req}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+    <div className="bg-black text-white min-h-screen">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-14 py-8 sm:py-12 space-y-10">
+        {/* Breadcrumb navigation */}
+        <nav className="flex items-center gap-1.5 text-xs text-[#808080] flex-wrap">
+          <Link href="/" className="hover:text-white">Home</Link>
+          <ChevronRight className="h-3.5 w-3.5 opacity-50" />
+          <Link href="/workflows" className="hover:text-white">Workflows</Link>
+          {workflow.category && (
+            <>
+              <ChevronRight className="h-3.5 w-3.5 opacity-50" />
+              <Link href={`/workflows?category=${workflow.category.slug}`} className="hover:text-white">
+                {workflow.category.name}
+              </Link>
+            </>
           )}
+          <ChevronRight className="h-3.5 w-3.5 opacity-50" />
+          <span className="text-white font-medium truncate max-w-xs">{workflow.title}</span>
+        </nav>
 
-          {/* Fast Track Support Card */}
-          <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-6 space-y-3">
-            <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-emerald-500" />
-              Need Installation Assistance?
-            </h3>
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              Don&apos;t have time to connect nodes and write webhooks? Our
-              automation team can set this up on your server within 24 hours.
-            </p>
-            <div className="pt-2">
-              <WorkflowDetailActions workflow={workflow} />
+        {/* 1. HEADER SECTION ON #232323 */}
+        <div className="rounded-[8px] border border-[#414141] bg-[#232323] p-6 sm:p-10">
+          <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-8">
+            <div className="space-y-4 max-w-3xl">
+              {/* Meta Tags */}
+              <div className="flex items-center gap-2 flex-wrap">
+                {workflow.category && (
+                  <span className="px-2.5 py-1 rounded-[4px] bg-[#161616] text-xs font-medium text-white border border-[#414141]">
+                    {workflow.category.name}
+                  </span>
+                )}
+                <span className="px-2.5 py-1 rounded-[4px] bg-[#e50914] text-xs font-bold text-white uppercase">
+                  {workflow.difficulty}
+                </span>
+                <span className="text-xs text-[#808080] flex items-center gap-1">
+                  <Clock className="h-3.5 w-3.5" />
+                  {workflow.estimatedTime}
+                </span>
+                <span className="text-xs text-[#808080] flex items-center gap-1">
+                  <Eye className="h-3.5 w-3.5" />
+                  {workflow.views} views
+                </span>
+              </div>
+
+              {/* Title in Weight 900 / 500 */}
+              <h1 className="text-2xl sm:text-4xl md:text-5xl font-black tracking-tight text-white leading-tight">
+                {workflow.title}
+              </h1>
+
+              {/* Summary */}
+              <p className="text-sm sm:text-base text-[#cbd5e1] leading-relaxed">
+                {workflow.summary}
+              </p>
+
+              {/* Platforms */}
+              {workflow.platforms.length > 0 && (
+                <div className="flex items-center gap-2 flex-wrap pt-2">
+                  <span className="text-xs font-medium text-[#808080]">Compatible with:</span>
+                  {workflow.platforms.map(({ platform }) => (
+                    <span key={platform.id} className="px-2 py-0.5 rounded-[4px] bg-[#161616] border border-[#414141] text-xs text-white">
+                      {platform.name}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Pricing & CTA Card */}
+            <div className="lg:w-80 flex flex-col gap-4 rounded-[8px] border border-[#414141] bg-[#161616] p-6">
+              <div>
+                <span className="text-xs text-[#808080] font-medium uppercase tracking-wider block mb-1">
+                  Blueprint Pricing
+                </span>
+                <div className="text-2xl font-bold text-white flex items-center gap-2">
+                  <span>{workflow.price || "Free Template"}</span>
+                </div>
+                <p className="text-[11px] text-[#808080] mt-1">
+                  Includes full n8n JSON nodes and deployment guide.
+                </p>
+              </div>
+
+              <div className="pt-2 border-t border-[#414141]">
+                <WorkflowDetailActions workflow={workflow} />
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* 3. RELATED WORKFLOWS */}
-      {relatedWorkflows.length > 0 && (
-        <section className="pt-8 border-t border-border space-y-6">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl sm:text-2xl font-bold text-foreground">
-              Related Automations You Might Like
-            </h2>
-            <Link
-              href="/workflows"
-              className="text-xs font-semibold text-primary hover:underline"
-            >
-              View all
-            </Link>
+        {/* 2. MAIN GRID */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Column (Flow Viewer & Details) */}
+          <div className="lg:col-span-2 space-y-10">
+            {/* Visual Step-by-Step Flow Viewer */}
+            <section className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl sm:text-2xl font-medium text-white flex items-center gap-2">
+                  <Zap className="h-5 w-5 text-[#e50914]" />
+                  Workflow Execution Pipeline
+                </h2>
+                <span className="text-xs px-2.5 py-1 rounded-[4px] bg-[#232323] border border-[#414141] text-white">
+                  {workflow.steps.length} Steps
+                </span>
+              </div>
+
+              <div className="pt-2">
+                <WorkflowViewer steps={workflow.steps} workflowTitle={workflow.title} />
+              </div>
+            </section>
+
+            {/* Description / Markdown */}
+            <section className="rounded-[8px] border border-[#414141] bg-[#232323] p-6 sm:p-8 space-y-4">
+              <h2 className="text-lg font-medium text-white flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-[#e50914]" />
+                Detailed Specifications & Benefits
+              </h2>
+              <div className="prose dark:prose-invert max-w-none text-sm text-[#cbd5e1] whitespace-pre-line leading-relaxed">
+                {workflow.description}
+              </div>
+            </section>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {relatedWorkflows.map((rel) => (
-              <WorkflowCard key={rel.id} workflow={rel} />
-            ))}
+
+          {/* Right Column: Requirements & Outcome */}
+          <div className="space-y-6">
+            {/* Triggers & Outcomes */}
+            <div className="rounded-[8px] border border-[#414141] bg-[#232323] p-6 space-y-4">
+              <h3 className="text-sm font-medium uppercase tracking-wider text-white flex items-center gap-2">
+                <Cpu className="h-4 w-4 text-[#e50914]" />
+                Trigger & Outcome
+              </h3>
+
+              {workflow.triggersDescription && (
+                <div className="space-y-1 text-xs">
+                  <strong className="text-white block">When Triggered:</strong>
+                  <p className="text-[#808080] leading-relaxed">{workflow.triggersDescription}</p>
+                </div>
+              )}
+
+              {workflow.outcomesDescription && (
+                <div className="space-y-1 text-xs pt-2 border-t border-[#414141]">
+                  <strong className="text-white block">Expected Result:</strong>
+                  <p className="text-[#808080] leading-relaxed">{workflow.outcomesDescription}</p>
+                </div>
+              )}
+            </div>
+
+            {/* Pre-requisites */}
+            {requirementsList.length > 0 && (
+              <div className="rounded-[8px] border border-[#414141] bg-[#232323] p-6 space-y-4">
+                <h3 className="text-sm font-medium uppercase tracking-wider text-white flex items-center gap-2">
+                  <ShieldCheck className="h-4 w-4 text-[#e50914]" />
+                  Required Accounts / APIs
+                </h3>
+                <ul className="space-y-2.5">
+                  {requirementsList.map((req, idx) => (
+                    <li key={idx} className="flex items-start gap-2 text-xs text-[#808080]">
+                      <CheckCircle2 className="h-4 w-4 text-[#e50914] shrink-0 mt-0.5" />
+                      <span className="text-white">{req}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Assistance Box */}
+            <div className="rounded-[8px] border border-[#414141] bg-[#161616] p-6 space-y-3">
+              <h3 className="text-sm font-medium text-white flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-[#e50914]" />
+                Need Turnkey Installation?
+              </h3>
+              <p className="text-xs text-[#808080] leading-relaxed">
+                Our engineers can install, test, and connect this entire automation workflow to your accounts in 24 hours.
+              </p>
+              <div className="pt-2">
+                <WorkflowDetailActions workflow={workflow} />
+              </div>
+            </div>
           </div>
-        </section>
-      )}
+        </div>
+
+        {/* 3. RELATED WORKFLOWS */}
+        {relatedWorkflows.length > 0 && (
+          <section className="pt-8 border-t border-[#232323] space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl sm:text-2xl font-medium text-white">
+                Related Automations
+              </h2>
+              <Link href="/workflows" className="text-xs font-medium text-[#e50914] hover:underline">
+                View all
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {relatedWorkflows.map((rel) => (
+                <WorkflowCard key={rel.id} workflow={rel} />
+              ))}
+            </div>
+          </section>
+        )}
+      </div>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Send, Loader2, CheckCircle2, MessageSquare, Sparkles, Lock } from "lucide-react";
+import { Send, Loader2, CheckCircle2, MessageSquare, Lock } from "lucide-react";
 import confetti from "canvas-confetti";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,7 +29,6 @@ export function RequestForm() {
     const company = formData.get("company") as string;
     const message = formData.get("message") as string;
 
-    // Generate formatted WhatsApp message containing all lead inputs
     const waUrl = generateLeadWhatsAppLink({
       name,
       email,
@@ -48,7 +47,6 @@ export function RequestForm() {
         confetti({ particleCount: 70, spread: 80, origin: { y: 0.5 } });
       } catch (err) {}
 
-      // Automatically launch WhatsApp with the filled details
       if (typeof window !== "undefined") {
         window.open(waUrl, "_blank");
       }
@@ -60,19 +58,19 @@ export function RequestForm() {
   if (submitted) {
     return (
       <div className="text-center py-10 space-y-6">
-        <div className="mx-auto h-16 w-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-500">
+        <div className="mx-auto h-16 w-16 rounded-[8px] bg-[#161616] border border-[#e50914] flex items-center justify-center text-[#e50914]">
           <CheckCircle2 className="h-10 w-10" />
         </div>
         <div>
-          <h3 className="text-2xl font-bold text-foreground">Brief Saved & Opening WhatsApp! 🚀</h3>
-          <p className="text-sm text-muted-foreground mt-2 max-w-md mx-auto leading-relaxed">
+          <h3 className="text-2xl font-bold text-white">Brief Saved & Opening WhatsApp! 🚀</h3>
+          <p className="text-sm text-[#808080] mt-2 max-w-md mx-auto leading-relaxed">
             Your brief has been logged in our database and forwarded to WhatsApp so our lead engineer can respond right away.
           </p>
         </div>
         <div className="pt-2">
           {directWaLink && (
             <a href={directWaLink} target="_blank" rel="noopener noreferrer">
-              <Button variant="whatsapp" size="lg" className="gap-2 font-bold shadow-lg shadow-emerald-500/20">
+              <Button variant="default" size="lg" className="gap-2 font-medium">
                 <MessageSquare className="h-5 w-5" />
                 Click here if WhatsApp didn&apos;t open automatically
               </Button>
@@ -86,43 +84,43 @@ export function RequestForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {errorMessage && (
-        <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/30 text-destructive text-xs font-medium">
+        <div className="p-3 rounded-[8px] bg-[#e50914]/10 border border-[#e50914] text-[#e50914] text-xs font-medium">
           {errorMessage}
         </div>
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="text-xs font-semibold text-foreground block mb-1">
+          <label className="text-xs font-medium text-white block mb-1">
             Your Name *
           </label>
-          <Input required name="name" placeholder="Mohamed Alami" className="h-11" />
+          <Input required name="name" placeholder="Mohamed Alami" className="h-12" />
         </div>
         <div>
-          <label className="text-xs font-semibold text-foreground block mb-1">
+          <label className="text-xs font-medium text-white block mb-1">
             Email Address *
           </label>
-          <Input required type="email" name="email" placeholder="mohamed@company.ma" className="h-11" />
+          <Input required type="email" name="email" placeholder="mohamed@company.ma" className="h-12" />
         </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="text-xs font-semibold text-foreground block mb-1">
+          <label className="text-xs font-medium text-white block mb-1">
             WhatsApp Phone Number *
           </label>
-          <Input required type="tel" name="whatsapp" placeholder="+212 6..." className="h-11" />
+          <Input required type="tel" name="whatsapp" placeholder="+212 6..." className="h-12" />
         </div>
         <div>
-          <label className="text-xs font-semibold text-foreground block mb-1">
+          <label className="text-xs font-medium text-white block mb-1">
             Company / Store Name
           </label>
-          <Input name="company" placeholder="e.g. Atlas Commerce" className="h-11" />
+          <Input name="company" placeholder="e.g. Atlas Commerce" className="h-12" />
         </div>
       </div>
 
       <div>
-        <label className="text-xs font-semibold text-foreground block mb-1">
+        <label className="text-xs font-medium text-white block mb-1">
           Describe the Workflow You Need *
         </label>
         <Textarea
@@ -139,7 +137,7 @@ export function RequestForm() {
           type="submit"
           disabled={pending}
           size="lg"
-          className="w-full font-bold bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 shadow-lg shadow-emerald-500/20 text-sm gap-2"
+          className="w-full font-medium bg-[#e50914] hover:bg-[#c11119] text-white text-base h-12 gap-2 rounded-[8px]"
         >
           {pending ? (
             <>
@@ -155,9 +153,9 @@ export function RequestForm() {
         </Button>
       </div>
 
-      <p className="text-[11px] text-muted-foreground text-center flex items-center justify-center gap-1">
+      <p className="text-[11px] text-[#808080] text-center flex items-center justify-center gap-1">
         <Lock className="h-3 w-3" />
-        Direct WhatsApp transmission to +212 625-945061.
+        Direct WhatsApp transmission to our engineering team.
       </p>
     </form>
   );

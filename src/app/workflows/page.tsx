@@ -95,110 +95,107 @@ export default async function WorkflowsCatalogPage({
   const totalPages = Math.ceil(totalCount / pageSize);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 space-y-8">
-      {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div>
-          <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary uppercase tracking-wider mb-2">
-            <Layers className="h-3.5 w-3.5" />
-            Catalog
+    <div className="bg-black text-white min-h-screen">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-14 py-12 sm:py-16 space-y-8">
+        {/* Page Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-[#232323]">
+          <div>
+            <span className="text-xs font-bold uppercase tracking-wider text-[#e50914] block mb-1">
+              Catalog
+            </span>
+            <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white uppercase">
+              Explore Automations
+            </h1>
+            <p className="text-sm text-[#808080] mt-1">
+              Showing <strong className="text-white">{totalCount}</strong> verified workflow templates ready for deployment.
+            </p>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
-            Explore Automation Workflows
-          </h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Showing <strong className="text-foreground">{totalCount}</strong>{" "}
-            verified workflow templates ready for deployment.
-          </p>
+
+          <Link href="/request">
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2 text-xs font-medium rounded-[8px]"
+            >
+              <span>Request Custom Workflow</span>
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Button>
+          </Link>
         </div>
 
-        <Link href="/request">
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-1.5 text-xs font-medium"
-          >
-            <Sparkles className="h-3.5 w-3.5 text-emerald-500" />
-            Request Custom Workflow
-          </Button>
-        </Link>
-      </div>
+        {/* Filter Toolbar with Suspense */}
+        <Suspense fallback={<div className="h-32 rounded-[8px] bg-[#232323] animate-pulse" />}>
+          <WorkflowFilters
+            categories={categories}
+            platforms={platforms}
+            selectedCategory={categorySlug}
+            selectedPlatform={platformSlug}
+            selectedDifficulty={difficulty}
+            selectedSort={sort}
+            searchQuery={q}
+          />
+        </Suspense>
 
-      {/* Filter Toolbar with Suspense */}
-      <Suspense
-        fallback={<div className="h-32 rounded-2xl bg-card animate-pulse" />}
-      >
-        <WorkflowFilters
-          categories={categories}
-          platforms={platforms}
-          selectedCategory={categorySlug}
-          selectedPlatform={platformSlug}
-          selectedDifficulty={difficulty}
-          selectedSort={sort}
-          searchQuery={q}
-        />
-      </Suspense>
-
-      {/* Workflows Grid or Empty State */}
-      {workflows.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {workflows.map((workflow) => (
-            <WorkflowCard key={workflow.id} workflow={workflow} />
-          ))}
-        </div>
-      ) : (
-        <div className="rounded-3xl border border-dashed border-border bg-card/40 p-12 text-center max-w-lg mx-auto space-y-4">
-          <div className="mx-auto h-12 w-12 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
-            <AlertCircle className="h-6 w-6" />
+        {/* Workflows Grid or Empty State */}
+        {workflows.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {workflows.map((workflow) => (
+              <WorkflowCard key={workflow.id} workflow={workflow} />
+            ))}
           </div>
-          <h3 className="text-lg font-bold text-foreground">
-            No workflows found
-          </h3>
-          <p className="text-xs text-muted-foreground leading-relaxed">
-            We couldn&apos;t find any automation matching your current filter
-            criteria. Try clearing some filters or search for another keyword.
-          </p>
-          <div className="pt-2 flex justify-center gap-3">
-            <Link href="/workflows">
-              <Button variant="default" size="sm">
-                Reset All Filters
-              </Button>
-            </Link>
-            <Link href="/request">
-              <Button variant="outline" size="sm">
-                Request This Automation
-              </Button>
-            </Link>
-          </div>
-        </div>
-      )}
-
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2 pt-8 border-t border-border">
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
-            const params = new URLSearchParams();
-            if (q) params.set("q", q);
-            if (categorySlug) params.set("category", categorySlug);
-            if (platformSlug) params.set("platform", platformSlug);
-            if (difficulty) params.set("difficulty", difficulty);
-            if (sort) params.set("sort", sort);
-            params.set("page", p.toString());
-
-            return (
-              <Link key={p} href={`/workflows?${params.toString()}`}>
-                <Button
-                  variant={p === page ? "default" : "outline"}
-                  size="sm"
-                  className="w-9 h-9 p-0 text-xs font-semibold"
-                >
-                  {p}
+        ) : (
+          <div className="rounded-[8px] border border-[#414141] bg-[#232323] p-12 text-center max-w-lg mx-auto space-y-4">
+            <div className="mx-auto h-12 w-12 rounded-[8px] bg-[#161616] flex items-center justify-center text-[#808080]">
+              <AlertCircle className="h-6 w-6" />
+            </div>
+            <h3 className="text-lg font-medium text-white">
+              No workflows found
+            </h3>
+            <p className="text-xs text-[#808080] leading-relaxed">
+              We couldn&apos;t find any automation matching your current filter criteria.
+            </p>
+            <div className="pt-2 flex justify-center gap-3">
+              <Link href="/workflows">
+                <Button variant="default" size="sm">
+                  Reset All Filters
                 </Button>
               </Link>
-            );
-          })}
-        </div>
-      )}
+              <Link href="/request">
+                <Button variant="outline" size="sm">
+                  Request This Automation
+                </Button>
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-2 pt-8 border-t border-[#232323]">
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
+              const params = new URLSearchParams();
+              if (q) params.set("q", q);
+              if (categorySlug) params.set("category", categorySlug);
+              if (platformSlug) params.set("platform", platformSlug);
+              if (difficulty) params.set("difficulty", difficulty);
+              if (sort) params.set("sort", sort);
+              params.set("page", p.toString());
+
+              return (
+                <Link key={p} href={`/workflows?${params.toString()}`}>
+                  <Button
+                    variant={p === page ? "default" : "secondary"}
+                    size="sm"
+                    className="w-10 h-10 p-0 text-xs font-semibold rounded-[8px]"
+                  >
+                    {p}
+                  </Button>
+                </Link>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

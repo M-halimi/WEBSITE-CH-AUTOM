@@ -50,24 +50,46 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        brand: {
-          50: "#f0fdf4",
-          100: "#dcfce7",
-          200: "#bbf7d0",
-          300: "#86efac",
-          400: "#4ade80",
-          500: "#22c55e",
-          600: "#16a34a",
-          700: "#15803d",
-          800: "#166534",
-          900: "#14532d",
-          950: "#052e16",
+        // Netflix Design Tokens
+        netflix: {
+          red: "#e50914",
+          redHover: "#c11119",
+          burgundy: "#461518",
+          oxblood: "#6f181d",
+          navy: "#192247",
+          electric: "#4061e7",
+          wine: "#210e17",
+          canvas: "#000000",
+          surfaceDeep: "#161616",
+          surfaceCard: "#232323",
+          surfaceInput: "#2d2d2d",
+          inkBase: "#ffffff",
+          inkMuted: "#808080",
+          hairlineDim: "#414141",
         },
       },
       borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        none: "0px",
+        hairline: "2px",
+        xs: "4px",
+        sm: "6px",
+        DEFAULT: "8px",
+        md: "8px",
+        lg: "8px",
+        xl: "16px",
+        "2xl": "16px",
+        "3xl": "20px",
+        full: "9999px",
+      },
+      fontSize: {
+        "hero-display": ["56px", { lineHeight: "70px", fontWeight: "900" }],
+        "section-title": ["24px", { lineHeight: "1.2", fontWeight: "500" }],
+        "accordion-title": ["24px", { lineHeight: "1.2", fontWeight: "400" }],
+        "body-emphasis": ["20px", { lineHeight: "1.3", fontWeight: "500" }],
+        "body-base": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+        "body-sm": ["14px", { lineHeight: "21px", fontWeight: "400" }],
+        "button-label": ["24px", { lineHeight: "24px", fontWeight: "500" }],
+        "legal-caption": ["13px", { lineHeight: "1.4", fontWeight: "400" }],
       },
       keyframes: {
         "accordion-down": {
@@ -78,15 +100,10 @@ const config: Config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        "pulse-glow": {
-          "0%, 100%": { opacity: "0.4", transform: "scale(1)" },
-          "50%": { opacity: "0.8", transform: "scale(1.05)" },
-        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "pulse-glow": "pulse-glow 4s ease-in-out infinite",
       },
     },
   },
@@ -94,4 +111,3 @@ const config: Config = {
 };
 
 export default config;
-
