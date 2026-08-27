@@ -1,0 +1,128 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String?
+  passwordHash String
+  role         String   @default("ADMIN") // ADMIN, USER
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Category {
+  id          String     @id @default(cuid())
+  name        String     @unique
+  slug        String     @unique
+  description String?
+  icon        String?    // Lucide icon name or emoji
+  order       Int        @default(0)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  workflows   Workflow[]
+}
+
+model Platform {
+  id          String               @id @default(cuid())
+  name        String               @unique
+  slug        String               @unique
+  icon        String?              // Icon name or SVG URL
+  color       String?              // Hex or badge class
+  workflows   WorkflowOnPlatform[]
+  createdAt   DateTime             @default(now())
+}
+
+model Tag {
+  id          String          @id @default(cuid())
+  name        String          @unique
+  slug        String          @unique
+  workflows   WorkflowOnTag[]
+  createdAt   DateTime        @default(now())
+}
+
+model Workflow {
+  id                  String               @id @default(cuid())
+  title               String
+  slug                String               @unique
+  summary             String
+  description         String
+  difficulty          String               @default("BEGINNER") // BEGINNER, INTERMEDIATE, ADVANCED
+  estimatedTime       String               @default("15 mins")
+  stepsCount          Int                  @default(0)
+  status              String               @default("DRAFT") // DRAFT, PUBLISHED, ARCHIVED
+  views               Int                  @default(0)
+  featured            Boolean              @default(false)
+  price               String?              @default("Free / Included")
+  demoUrl             String?
+  n8nJson             String?              // Raw JSON export if imported
+  
+  // Rich descriptions
+  triggersDescription String?
+  outcomesDescription String?
+  requirements        String?              // JSON or markdown of credentials/tools needed
+  
+  // Relations
+  categoryId          String?
+  category            Category?            @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  platforms           WorkflowOnPlatform[]
+  tags                WorkflowOnTag[]
+  steps               WorkflowStep[]
+  requests            LeadRequest[]
+
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+}
+
+model WorkflowStep {
+  id          String   @id @default(cuid())
+  workflowId  String
+  workflow    Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  order       Int      @default(0)
+  name        String
+  type        String   @default("ACTION") // TRIGGER, ACTION, CONDITION, TRANSFORM, NOTIFICATION
+  description String?
+  icon        String?  // Icon name (e.g., 'zap', 'database', 'mail', 'bot')
+  appName     String?  // e.g. "WhatsApp", "Google Sheets", "OpenAI"
+  configJson  String?  // Optional extra metadata
+  createdAt   DateTime @default(now())
+}
+
+model WorkflowOnPlatform {
+  workflowId String
+  platformId String
+  workflow   Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  platform   Platform @relation(fields: [platformId], references: [id], onDelete: Cascade)
+
+  @@id([workflowId, platformId])
+}
+
+model WorkflowOnTag {
+  workflowId String
+  tagId      String
+  workflow   Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  tag        Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([workflowId, tagId])
+}
+
+model LeadRequest {
+  id          String    @id @default(cuid())
+  name        String
+  email       String
+  whatsapp    String?
+  company     String?
+  message     String?
+  status      String    @default("NEW") // NEW, CONTACTED, IN_PROGRESS, COMPLETED, CANCELLED
+  workflowId  String?
+  workflow    Workflow? @relation(fields: [workflowId], references: [id], onDelete: SetNull)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
