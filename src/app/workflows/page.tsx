@@ -10,9 +10,9 @@ import { Button } from "@/components/ui/button";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Workflow Catalog — AutoFlows Hub",
+  title: "Automation Blueprints Catalog — AutoFlows Hub",
   description:
-    "Browse and filter our comprehensive collection of business automation workflows.",
+    "Browse and filter our comprehensive collection of commerce and business automation blueprints.",
 };
 
 interface WorkflowsPageProps {
@@ -35,7 +35,7 @@ export default async function WorkflowsCatalogPage({
   const difficulty = searchParams.difficulty || "";
   const sort = searchParams.sort || "newest";
   const page = parseInt(searchParams.page || "1", 10);
-  const pageSize = 9;
+  const pageSize = 12;
 
   // Build Prisma Where Clause
   const where: any = {
@@ -95,19 +95,19 @@ export default async function WorkflowsCatalogPage({
   const totalPages = Math.ceil(totalCount / pageSize);
 
   return (
-    <div className="bg-black text-white min-h-screen">
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-14 py-12 sm:py-16 space-y-8">
+    <div className="bg-background text-foreground min-h-screen transition-colors duration-300">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-10 sm:py-14 space-y-10">
         {/* Page Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-[#232323]">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-8 border-b border-border">
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-[#e50914] block mb-1">
-              Catalog
-            </span>
-            <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white uppercase">
-              Explore Automations
+            <div className="text-xs font-bold text-amber-600 dark:text-[#ffd233] uppercase tracking-wider mb-2">
+              Blueprint Marketplace
+            </div>
+            <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground">
+              Automation Blueprints
             </h1>
-            <p className="text-sm text-[#808080] mt-1">
-              Showing <strong className="text-white">{totalCount}</strong> verified workflow templates ready for deployment.
+            <p className="text-xs sm:text-sm text-muted-foreground mt-2">
+              Showing <strong className="text-foreground font-semibold">{totalCount}</strong> verified blueprints ready for immediate deployment.
             </p>
           </div>
 
@@ -115,16 +115,16 @@ export default async function WorkflowsCatalogPage({
             <Button
               variant="outline"
               size="sm"
-              className="gap-2 text-xs font-medium rounded-[8px]"
+              className="gap-2 text-xs font-bold rounded-full border border-border hover:bg-muted text-foreground"
             >
-              <span>Request Custom Workflow</span>
-              <ArrowRight className="h-3.5 w-3.5" />
+              <Sparkles className="h-3.5 w-3.5 text-[#ffd233]" />
+              <span>Request Custom Blueprint</span>
             </Button>
           </Link>
         </div>
 
-        {/* Filter Toolbar with Suspense */}
-        <Suspense fallback={<div className="h-32 rounded-[8px] bg-[#232323] animate-pulse" />}>
+        {/* Filter Toolbar */}
+        <Suspense fallback={<div className="h-32 rounded-3xl bg-muted animate-pulse" />}>
           <WorkflowFilters
             categories={categories}
             platforms={platforms}
@@ -138,31 +138,35 @@ export default async function WorkflowsCatalogPage({
 
         {/* Workflows Grid or Empty State */}
         {workflows.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {workflows.map((workflow) => (
-              <WorkflowCard key={workflow.id} workflow={workflow} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {workflows.map((workflow, idx) => (
+              <WorkflowCard 
+                key={workflow.id} 
+                workflow={workflow} 
+                illustrationIndex={idx}
+              />
             ))}
           </div>
         ) : (
-          <div className="rounded-[8px] border border-[#414141] bg-[#232323] p-12 text-center max-w-lg mx-auto space-y-4">
-            <div className="mx-auto h-12 w-12 rounded-[8px] bg-[#161616] flex items-center justify-center text-[#808080]">
+          <div className="rounded-3xl border border-border bg-card p-16 text-center max-w-lg mx-auto space-y-4 shadow-sm">
+            <div className="mx-auto h-12 w-12 rounded-full bg-muted flex items-center justify-center text-amber-600 dark:text-[#ffd233]">
               <AlertCircle className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-medium text-white">
-              No workflows found
+            <h3 className="text-lg font-bold text-foreground">
+              No blueprints found
             </h3>
-            <p className="text-xs text-[#808080] leading-relaxed">
+            <p className="text-xs text-muted-foreground leading-relaxed">
               We couldn&apos;t find any automation matching your current filter criteria.
             </p>
             <div className="pt-2 flex justify-center gap-3">
               <Link href="/workflows">
-                <Button variant="default" size="sm">
+                <Button variant="default" size="sm" className="rounded-full bg-[#ffd233] text-black font-bold">
                   Reset All Filters
                 </Button>
               </Link>
               <Link href="/request">
-                <Button variant="outline" size="sm">
-                  Request This Automation
+                <Button variant="outline" size="sm" className="rounded-full border border-border">
+                  Request Custom Build
                 </Button>
               </Link>
             </div>
@@ -171,7 +175,7 @@ export default async function WorkflowsCatalogPage({
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-center gap-2 pt-8 border-t border-[#232323]">
+          <div className="flex items-center justify-center gap-2 pt-8 border-t border-border">
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
               const params = new URLSearchParams();
               if (q) params.set("q", q);
@@ -184,9 +188,13 @@ export default async function WorkflowsCatalogPage({
               return (
                 <Link key={p} href={`/workflows?${params.toString()}`}>
                   <Button
-                    variant={p === page ? "default" : "secondary"}
+                    variant={p === page ? "default" : "ghost"}
                     size="sm"
-                    className="w-10 h-10 p-0 text-xs font-semibold rounded-[8px]"
+                    className={`w-10 h-10 p-0 text-xs font-bold rounded-full ${
+                      p === page
+                        ? "bg-[#ffd233] text-black shadow-xs"
+                        : "border border-border text-foreground hover:bg-muted"
+                    }`}
                   >
                     {p}
                   </Button>

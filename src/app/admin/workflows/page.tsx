@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { WorkflowTableActions } from "@/components/admin/WorkflowTableActions";
 import { formatDate } from "@/lib/utils";
 
-export const revalidate = 0; // Fresh admin query
+export const dynamic = "force-dynamic";
 
 export default async function AdminWorkflowsPage() {
   const workflows = await prisma.workflow.findMany({
@@ -34,7 +34,7 @@ export default async function AdminWorkflowsPage() {
 
         <div className="flex items-center gap-2">
           <Link href="/admin/workflows/new">
-            <Button size="sm" className="gap-1.5 text-xs font-semibold">
+            <Button size="sm" className="gap-1.5 text-xs font-bold bg-[#ffd233] text-black">
               <PlusCircle className="h-4 w-4" />
               Create New Workflow
             </Button>
@@ -53,7 +53,7 @@ export default async function AdminWorkflowsPage() {
       </div>
 
       {/* Workflows Table */}
-      <div className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
+      <div className="rounded-3xl border border-border bg-card shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead className="bg-muted/40 text-muted-foreground font-semibold uppercase tracking-wider border-b border-border">
@@ -91,7 +91,7 @@ export default async function AdminWorkflowsPage() {
                   </td>
                   <td className="py-3.5 px-4 text-muted-foreground">
                     <span>{wf.views} views</span>
-                    <span className="block text-[11px] text-primary font-semibold">
+                    <span className="block text-[11px] text-amber-600 dark:text-[#ffd233] font-semibold">
                       {wf._count.requests} leads
                     </span>
                   </td>

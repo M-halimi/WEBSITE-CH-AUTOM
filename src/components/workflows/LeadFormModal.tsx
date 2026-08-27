@@ -6,8 +6,9 @@ import {
   Sparkles, 
   CheckCircle2, 
   MessageSquare, 
-  Loader2,
-  Lock
+  Loader2, 
+  Lock, 
+  Zap 
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { Button } from "@/components/ui/button";
@@ -87,80 +88,79 @@ export function LeadFormModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in-0">
-      <div className="relative w-full max-w-lg rounded-[8px] border border-[#414141] bg-[#232323] p-6 sm:p-8 animate-in zoom-in-95 duration-150 text-white">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in-0">
+      <div className="relative w-full max-w-lg rounded-3xl border border-border bg-card p-6 sm:p-8 shadow-2xl animate-in zoom-in-95 duration-150 text-foreground">
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 rounded-[6px] p-2 text-[#808080] hover:bg-[#2d2d2d] hover:text-white transition-colors"
+          className="absolute right-4 top-4 rounded-full p-2 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
           aria-label="Close modal"
         >
           <X className="h-5 w-5" />
         </button>
 
         {submitted ? (
-          <div className="text-center py-6 space-y-5">
-            <div className="mx-auto h-14 w-14 rounded-[8px] bg-[#161616] border border-[#e50914] flex items-center justify-center text-[#e50914]">
+          <div className="text-center py-6 space-y-6">
+            <div className="mx-auto h-16 w-16 rounded-full bg-amber-100 dark:bg-amber-950/50 text-amber-700 dark:text-[#ffd233] flex items-center justify-center border border-amber-300">
               <CheckCircle2 className="h-8 w-8" />
             </div>
             <div>
-              <h3 className="text-xl font-bold text-white">Opening WhatsApp & Saved! 🚀</h3>
-              <p className="text-xs sm:text-sm text-[#808080] mt-2 max-w-sm mx-auto leading-relaxed">
-                Your request details have been saved in our CRM and WhatsApp has been opened automatically.
+              <h3 className="text-xl font-bold text-foreground">Request Registered & WhatsApp Opening! 🚀</h3>
+              <p className="text-xs text-muted-foreground mt-2 max-w-sm mx-auto leading-relaxed">
+                Your blueprint details have been securely logged and WhatsApp has been triggered to connect you directly with our engineering team.
               </p>
             </div>
 
             <div className="pt-2 space-y-3">
               {directWaLink && (
                 <a href={directWaLink} target="_blank" rel="noopener noreferrer" className="w-full block">
-                  <Button variant="default" size="lg" className="w-full justify-center gap-2 font-medium">
-                    <MessageSquare className="h-5 w-5" />
+                  <Button variant="default" size="lg" className="w-full justify-center gap-2 rounded-full bg-[#ffd233] text-black font-bold">
+                    <MessageSquare className="h-4 w-4" />
                     Click here if WhatsApp didn&apos;t open
                   </Button>
                 </a>
               )}
-              <Button variant="secondary" onClick={onClose} className="w-full">
-                Close & Browse More
+              <Button variant="outline" onClick={onClose} className="w-full rounded-full">
+                Close & Continue
               </Button>
             </div>
           </div>
         ) : (
           <div>
             <div className="mb-6 space-y-1">
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[4px] text-xs font-medium bg-[#161616] text-[#e50914] border border-[#414141] mb-2">
-                <Sparkles className="h-3.5 w-3.5" />
-                {workflowTitle ? "Get This Automation" : "Custom Automation Request"}
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#ffd233] text-black mb-2 shadow-xs">
+                <Zap className="h-3.5 w-3.5 fill-current" />
+                {workflowTitle ? "Deploy Automation" : "Custom Blueprint"}
               </div>
-              <h3 className="text-xl font-bold tracking-tight text-white">
-                {workflowTitle ? `Deploy: ${workflowTitle}` : "Let's Build Your Custom Workflow"}
+              <h3 className="text-xl font-bold text-foreground">
+                {workflowTitle ? `Get: ${workflowTitle}` : "Let's Build Your Workflow"}
               </h3>
-              <p className="text-xs text-[#808080] leading-relaxed">
-                Submit below to connect directly on WhatsApp and register your project with our team.
+              <p className="text-xs text-muted-foreground">
+                Submit below to connect directly with our engineering team on WhatsApp.
               </p>
             </div>
 
             {errorMessage && (
-              <div className="mb-4 p-3 rounded-[8px] bg-[#e50914]/10 border border-[#e50914] text-[#e50914] text-xs font-medium">
+              <div className="mb-4 p-3 rounded-2xl bg-destructive/10 border border-destructive/30 text-destructive text-xs font-medium">
                 {errorMessage}
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} method="POST" className="space-y-4">
               <div>
-                <label className="text-xs font-medium text-white block mb-1">
+                <label className="text-xs font-semibold text-foreground block mb-1">
                   Your Full Name *
                 </label>
                 <Input
                   required
                   name="name"
                   placeholder="e.g. Mohamed Alami"
-                  className="h-11 text-sm"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-medium text-white block mb-1">
+                  <label className="text-xs font-semibold text-foreground block mb-1">
                     Email Address *
                   </label>
                   <Input
@@ -168,43 +168,39 @@ export function LeadFormModal({
                     type="email"
                     name="email"
                     placeholder="name@company.com"
-                    className="h-11 text-sm"
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-medium text-white block mb-1">
-                    Your WhatsApp Number *
+                  <label className="text-xs font-semibold text-foreground block mb-1">
+                    WhatsApp Phone *
                   </label>
                   <Input
                     required
                     type="tel"
                     name="whatsapp"
                     placeholder="+212 6..."
-                    className="h-11 text-sm"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-xs font-medium text-white block mb-1">
-                  Company / Brand Name (Optional)
+                <label className="text-xs font-semibold text-foreground block mb-1">
+                  Company / Store Name (Optional)
                 </label>
                 <Input
                   name="company"
-                  placeholder="e.g. Acme Agency"
-                  className="h-11 text-sm"
+                  placeholder="e.g. Atlas Commerce"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-medium text-white block mb-1">
-                  Additional Notes / Specific Requirements
+                <label className="text-xs font-semibold text-foreground block mb-1">
+                  Specific Requirements or Notes
                 </label>
                 <Textarea
                   name="message"
                   rows={3}
-                  placeholder="Tell us any specific tools or accounts you use..."
-                  className="text-sm"
+                  placeholder="Tell us what tools or accounts you use..."
                 />
               </div>
 
@@ -212,7 +208,7 @@ export function LeadFormModal({
                 <Button
                   type="submit"
                   disabled={pending}
-                  className="w-full h-12 text-base font-medium gap-2 bg-[#e50914] hover:bg-[#c11119] text-white"
+                  className="w-full h-12 text-xs sm:text-sm font-bold rounded-full gap-2 bg-[#ffd233] hover:bg-[#f5c71a] text-black shadow-xs"
                 >
                   {pending ? (
                     <>
@@ -228,7 +224,7 @@ export function LeadFormModal({
                 </Button>
               </div>
 
-              <p className="text-[11px] text-[#808080] text-center flex items-center justify-center gap-1">
+              <p className="text-[11px] text-muted-foreground text-center flex items-center justify-center gap-1 pt-1">
                 <Lock className="h-3 w-3" />
                 Direct WhatsApp connection to our engineering team.
               </p>

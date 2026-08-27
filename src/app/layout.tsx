@@ -3,26 +3,28 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Navbar } from "@/components/layout/Navbar";
+import { LeftDock } from "@/components/layout/LeftDock";
 import { Footer } from "@/components/layout/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "AutoFlows Hub — Automation Workflows Marketplace",
+  title: "AutoFlows Hub — The Commerce Automation Platform",
   description:
-    "Browse, deploy, and request production-ready n8n, WhatsApp, AI, and e-commerce automation workflows for your business.",
+    "Browse, deploy, and request production-ready n8n, WhatsApp Cloud API, AI customer agents, and Shopify automation blueprints.",
   keywords: [
     "automation",
+    "shopify automation",
     "n8n workflows",
-    "whatsapp automation",
-    "make.com",
-    "ai agent",
-    "lead generation maroc",
+    "whatsapp cloud api",
+    "make.com blueprints",
+    "ai agents",
+    "crm sync",
   ],
   openGraph: {
-    title: "AutoFlows Hub — Battle-Tested Automation Workflows",
+    title: "AutoFlows Hub — Automation Engine for High-Growth Commerce",
     description:
-      "Save 100+ hours every month with ready-to-deploy business automations.",
+      "Save 100+ hours every month with battle-tested commerce automations.",
     type: "website",
   },
 };
@@ -34,17 +36,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${inter.className} min-h-screen flex flex-col bg-background text-foreground selection:bg-primary/20 selection:text-primary`}
-      >
+      <body className={`${inter.className} min-h-screen flex flex-col bg-background text-foreground selection:bg-[#ffd233] selection:text-black overflow-x-hidden`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="dark"
+          defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >
           <Navbar />
-          <main className="flex-1">{children}</main>
+          <LeftDock />
+          <main className="flex-1 w-full max-w-full transition-all">{children}</main>
           <Footer />
         </ThemeProvider>
       </body>

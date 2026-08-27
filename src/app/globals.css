@@ -4,48 +4,49 @@
 
 @layer base {
   :root {
-    --background: 0 0% 0%; /* #000000 */
-    --foreground: 0 0% 100%; /* #ffffff */
-    --card: 0 0% 13.7%; /* #232323 */
-    --card-foreground: 0 0% 100%;
-    --popover: 0 0% 13.7%;
-    --popover-foreground: 0 0% 100%;
-    --primary: 357 92% 47%; /* #e50914 Netflix Red */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 13.7%; /* #232323 */
-    --secondary-foreground: 0 0% 100%;
-    --muted: 0 0% 8.6%; /* #161616 */
-    --muted-foreground: 0 0% 50.2%; /* #808080 */
-    --accent: 0 0% 13.7%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 357 92% 47%;
+    --background: 48 30% 98%; /* #fbf9f4 Warm Soft Cream Canvas */
+    --foreground: 0 0% 12%; /* #1e1e1e Near Black */
+    --card: 0 0% 100%; /* #ffffff Crisp White */
+    --card-foreground: 0 0% 12%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 12%;
+    --primary: 46 100% 58%; /* #ffd233 Sunshine Gold */
+    --primary-foreground: 0 0% 0%; /* #000000 */
+    --secondary: 48 20% 94%; /* #f4f1e8 */
+    --secondary-foreground: 0 0% 15%;
+    --muted: 48 15% 92%;
+    --muted-foreground: 0 0% 45%; /* #737373 */
+    --accent: 46 100% 58%;
+    --accent-foreground: 0 0% 0%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 25.5%; /* #414141 */
-    --input: 0 0% 17.6%; /* #2d2d2d */
-    --ring: 357 92% 47%;
-    --radius: 8px;
+    --border: 48 15% 88%; /* #ebe7dc */
+    --input: 48 15% 88%;
+    --ring: 46 100% 58%;
+    --radius: 20px;
   }
 
   .dark {
-    --background: 0 0% 0%;
-    --foreground: 0 0% 100%;
-    --card: 0 0% 13.7%;
-    --card-foreground: 0 0% 100%;
-    --popover: 0 0% 13.7%;
-    --popover-foreground: 0 0% 100%;
-    --primary: 357 92% 47%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 13.7%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: 0 0% 8.6%;
-    --muted-foreground: 0 0% 50.2%;
-    --accent: 0 0% 13.7%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 357 92% 47%;
+    --background: 220 15% 7%; /* #0f1115 Deep Obsidian Slate */
+    --foreground: 0 0% 98%; /* #fafafa */
+    --card: 220 14% 10%; /* #16191f Card */
+    --card-foreground: 0 0% 98%;
+    --popover: 220 14% 10%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 46 100% 58%; /* #ffd233 Sunshine Gold */
+    --primary-foreground: 0 0% 0%;
+    --secondary: 220 12% 16%; /* #22262f */
+    --secondary-foreground: 0 0% 98%;
+    --muted: 220 12% 14%;
+    --muted-foreground: 220 10% 60%; /* #9499a8 */
+    --accent: 46 100% 58%;
+    --accent-foreground: 0 0% 0%;
+    --destructive: 0 62% 30%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 25.5%;
-    --input: 0 0% 17.6%;
-    --ring: 357 92% 47%;
+    --border: 220 12% 16%;
+    --input: 220 12% 16%;
+    --ring: 46 100% 58%;
+    --radius: 20px;
   }
 }
 
@@ -54,46 +55,101 @@
     @apply border-border;
   }
   body {
-    @apply bg-black text-white antialiased;
-    background-color: #000000;
-    color: #ffffff;
-    font-family: 'Netflix Sans', 'Helvetica Neue', 'Segoe UI', Roboto, Ubuntu, sans-serif;
+    @apply bg-background text-foreground transition-colors duration-300;
+    font-family: 'Inter Variable', Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
   }
 }
 
-/* Netflix Signature Gradient Wash for Trending Rail */
-.netflix-gradient-rail {
-  background: linear-gradient(90deg, #192247 0%, #210e17 35%, #461518 70%, #6f181d 100%);
-}
-
-/* Netflix Signature Outline-Stroked Rank Numerals (1, 2, 3, 4) */
-.stroke-numeral {
-  font-family: 'Netflix Sans', 'Helvetica Neue', 'Segoe UI', Roboto, Ubuntu, sans-serif;
-  font-weight: 900;
-  -webkit-text-stroke: 4px #595959;
-  -webkit-text-fill-color: #000000;
-  line-height: 0.8;
-  user-select: none;
-}
-
-@media (min-width: 768px) {
-  .stroke-numeral {
-    -webkit-text-stroke: 6px #595959;
+/* Enhanced Keyframe Animations for Modern SaaS Cards */
+@keyframes radarWave {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.35;
+  }
+  100% {
+    transform: scale(0.85);
+    opacity: 0.85;
   }
 }
 
-/* Custom scrollbar for horizontal rails */
-::-webkit-scrollbar {
-  height: 6px;
-  width: 6px;
+@keyframes nodeSignal {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(255, 210, 51, 0.5);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(255, 210, 51, 0);
+    transform: scale(1.04);
+  }
 }
-::-webkit-scrollbar-track {
-  background: #161616;
+
+@keyframes floatGentle {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-5px) rotate(0.5deg);
+  }
 }
-::-webkit-scrollbar-thumb {
-  background: #414141;
-  border-radius: 8px;
+
+@keyframes cableShimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
 }
-::-webkit-scrollbar-thumb:hover {
-  background: #e50914;
+
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(0.98);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.02);
+  }
+}
+
+.animate-radar {
+  animation: radarWave 4s ease-in-out infinite;
+}
+
+.animate-node-signal {
+  animation: nodeSignal 2.5s infinite;
+}
+
+.animate-float-gentle {
+  animation: floatGentle 3.5s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 3s ease-in-out infinite;
+}
+
+.animate-cable {
+  background-size: 200% 200%;
+  animation: cableShimmer 2s linear infinite;
+}
+
+/* Card Hover Elevation & Glass Micro-Interactions */
+.modern-saas-card {
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+}
+.modern-saas-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.09), 0 0 0 1px rgba(255, 210, 51, 0.45);
+}
+
+.modern-saas-plate {
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+.modern-saas-card:hover .modern-saas-plate {
+  border-color: rgba(255, 210, 51, 0.6);
 }

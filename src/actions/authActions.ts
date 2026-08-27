@@ -21,7 +21,7 @@ export async function adminLogin(formData: FormData) {
     });
 
     if (!user || user.role !== "ADMIN") {
-      return { success: false, error: "Invalid credentials or unauthorized." };
+      return { success: false, error: "Invalid credentials or unauthorized account." };
     }
 
     const isValid = await bcrypt.compare(password, user.passwordHash);
@@ -41,12 +41,18 @@ export async function adminLogin(formData: FormData) {
     return { success: true };
   } catch (error) {
     console.error("Login error:", error);
-    return { success: false, error: "Authentication failed. Try again." };
+    return { success: false, error: "Authentication failed. Please try again." };
   }
 }
 
 export async function adminLogout() {
-  cookies().delete(ADMIN_COOKIE_NAME);
+  cookies().set(ADMIN_COOKIE_NAME, "", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: 0,
+    path: "/",
+  });
   redirect("/login");
 }
 
@@ -54,4 +60,3 @@ export async function verifyAdminSession(): Promise<boolean> {
   const sessionCookie = cookies().get(ADMIN_COOKIE_NAME);
   return Boolean(sessionCookie && sessionCookie.value === "admin_authenticated");
 }
-

@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/utils";
 
-export const revalidate = 0; // Dynamic server fetch
+export const dynamic = "force-dynamic";
 
 export default async function AdminDashboardPage() {
   const [
@@ -52,14 +52,13 @@ export default async function AdminDashboardPage() {
             Admin Dashboard
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
-            Monitor workflow metrics, incoming client briefs, and platform
-            activity.
+            Monitor workflow metrics, incoming client briefs, and platform activity.
           </p>
         </div>
 
         <div className="flex items-center gap-2">
           <Link href="/admin/workflows/new">
-            <Button size="sm" className="gap-1.5 text-xs font-semibold">
+            <Button size="sm" className="gap-1.5 text-xs font-bold bg-[#ffd233] text-black">
               <PlusCircle className="h-4 w-4" />
               Add Workflow
             </Button>
@@ -79,25 +78,23 @@ export default async function AdminDashboardPage() {
 
       {/* Metrics Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Metric 1 */}
-        <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
+        <div className="rounded-3xl border border-border bg-card p-5 shadow-sm">
           <div className="flex items-center justify-between text-muted-foreground mb-2">
             <span className="text-xs font-semibold uppercase tracking-wider">
               Total Workflows
             </span>
-            <Layers className="h-4 w-4 text-primary" />
+            <Layers className="h-4 w-4 text-amber-500" />
           </div>
           <div className="text-3xl font-extrabold text-foreground">
             {totalWorkflows}
           </div>
           <p className="text-[11px] text-muted-foreground mt-1">
-            <strong className="text-emerald-500">{publishedWorkflows}</strong>{" "}
+            <strong className="text-emerald-600 dark:text-emerald-400 font-semibold">{publishedWorkflows}</strong>{" "}
             published live
           </p>
         </div>
 
-        {/* Metric 2 */}
-        <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
+        <div className="rounded-3xl border border-border bg-card p-5 shadow-sm">
           <div className="flex items-center justify-between text-muted-foreground mb-2">
             <span className="text-xs font-semibold uppercase tracking-wider">
               Total Leads
@@ -108,13 +105,11 @@ export default async function AdminDashboardPage() {
             {totalLeads}
           </div>
           <p className="text-[11px] text-muted-foreground mt-1">
-            <strong className="text-amber-500">{newLeadsCount}</strong> new
-            awaiting contact
+            <strong className="text-amber-600 dark:text-[#ffd233] font-semibold">{newLeadsCount}</strong> new awaiting contact
           </p>
         </div>
 
-        {/* Metric 3 */}
-        <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
+        <div className="rounded-3xl border border-border bg-card p-5 shadow-sm">
           <div className="flex items-center justify-between text-muted-foreground mb-2">
             <span className="text-xs font-semibold uppercase tracking-wider">
               Total Catalog Views
@@ -129,13 +124,12 @@ export default async function AdminDashboardPage() {
           </p>
         </div>
 
-        {/* Metric 4 */}
-        <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
+        <div className="rounded-3xl border border-border bg-card p-5 shadow-sm">
           <div className="flex items-center justify-between text-muted-foreground mb-2">
             <span className="text-xs font-semibold uppercase tracking-wider">
               Conversion Rate
             </span>
-            <Sparkles className="h-4 w-4 text-teal-500" />
+            <Sparkles className="h-4 w-4 text-[#ffd233]" />
           </div>
           <div className="text-3xl font-extrabold text-foreground">
             {totalViews > 0 ? ((totalLeads / totalViews) * 100).toFixed(1) : 0}%
@@ -147,7 +141,7 @@ export default async function AdminDashboardPage() {
       </div>
 
       {/* Recent Leads Table */}
-      <div className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
+      <div className="rounded-3xl border border-border bg-card shadow-sm overflow-hidden">
         <div className="flex items-center justify-between p-5 border-b border-border">
           <div>
             <h2 className="text-base font-bold text-foreground">
@@ -159,7 +153,7 @@ export default async function AdminDashboardPage() {
           </div>
           <Link
             href="/admin/requests"
-            className="text-xs font-semibold text-primary hover:underline flex items-center gap-1"
+            className="text-xs font-bold text-amber-600 dark:text-[#ffd233] hover:underline flex items-center gap-1"
           >
             View All ({totalLeads}) <ArrowUpRight className="h-3.5 w-3.5" />
           </Link>

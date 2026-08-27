@@ -4,16 +4,17 @@ import * as React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { 
-  Zap, 
   Search, 
+  Zap, 
+  MessageSquare, 
   Menu, 
   X, 
-  MessageSquare, 
   Layers, 
-  ShieldCheck,
+  Sparkles, 
   ArrowRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { generateWhatsAppLink } from "@/lib/whatsapp";
 
 export function Navbar() {
@@ -21,11 +22,6 @@ export function Navbar() {
   const [searchQuery, setSearchQuery] = React.useState("");
   const pathname = usePathname();
   const router = useRouter();
-
-  const isCurrent = (path: string) => {
-    if (path === "/") return pathname === "/";
-    return pathname.startsWith(path);
-  };
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,38 +35,39 @@ export function Navbar() {
   const waLink = generateWhatsAppLink({});
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-black border-b border-[#232323]">
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-14">
-        <div className="flex h-20 items-center justify-between gap-4">
-          {/* Brand Logo */}
-          <div className="flex items-center gap-8">
+    <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur-md border-b border-border transition-colors duration-300">
+      <div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-10">
+        <div className="flex h-18 items-center justify-between gap-4 py-3">
+          
+          {/* Left Brand Mark */}
+          <div className="flex items-center gap-6">
             <Link href="/" className="flex items-center gap-2.5 group">
-              <div className="h-9 w-9 rounded-[8px] bg-[#e50914] flex items-center justify-center text-white font-black text-xl shadow-none">
-                <Zap className="h-5 w-5 fill-current" />
+              <div className="h-9 w-9 rounded-full bg-foreground text-background flex items-center justify-center font-bold transition-transform group-hover:scale-105 shadow-xs">
+                <span className="text-lg">✦</span>
               </div>
-              <span className="font-black text-2xl tracking-tighter text-[#e50914] uppercase">
-                AUTOFLOWS
+              <span className="font-extrabold text-lg tracking-tight text-foreground">
+                AutoFlows <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-[#ffd233] text-black">Hub</span>
               </span>
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-2">
+            <nav className="hidden md:flex items-center gap-1.5 text-xs font-semibold">
               <Link
                 href="/workflows"
-                className={`px-3 py-1.5 rounded-[8px] text-sm transition-colors ${
-                  isCurrent("/workflows")
-                    ? "text-white font-bold bg-[#232323]"
-                    : "text-[#808080] hover:text-white"
+                className={`px-4 py-2 rounded-full transition-colors ${
+                  pathname?.startsWith("/workflows")
+                    ? "bg-card border border-border text-foreground shadow-xs"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                Workflows
+                Blueprints Catalog
               </Link>
               <Link
                 href="/request"
-                className={`px-3 py-1.5 rounded-[8px] text-sm transition-colors ${
-                  isCurrent("/request")
-                    ? "text-white font-bold bg-[#232323]"
-                    : "text-[#808080] hover:text-white"
+                className={`px-4 py-2 rounded-full transition-colors ${
+                  pathname === "/request"
+                    ? "bg-card border border-border text-foreground shadow-xs"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 Custom Request
@@ -78,43 +75,44 @@ export function Navbar() {
             </nav>
           </div>
 
-          {/* Search bar */}
-          <div className="hidden lg:flex items-center flex-1 max-w-sm mx-6">
-            <form onSubmit={handleSearchSubmit} className="relative w-full">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#808080]" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search workflows, n8n, WhatsApp..."
-                className="w-full h-10 pl-10 pr-4 text-xs rounded-[8px] border border-[#414141] bg-[#2d2d2d] text-white focus:outline-none focus:border-white transition-colors placeholder:text-[#808080]"
-              />
+          {/* Right Action Bar */}
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            {/* Search Input Bar */}
+            <form onSubmit={handleSearchSubmit} className="hidden sm:flex items-center relative">
+              <div className="relative flex items-center">
+                <Search className="absolute left-3.5 h-3.5 w-3.5 text-muted-foreground" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search workflows by keyword..."
+                  className="w-48 md:w-60 h-9 pl-9 pr-3 text-xs rounded-full border border-border bg-card text-foreground focus:outline-none focus:border-[#ffd233] transition-all"
+                />
+              </div>
             </form>
-          </div>
 
-          {/* Right Actions */}
-          <div className="flex items-center gap-3">
-            <Link href="/login" className="hidden sm:inline-flex">
+            <Link href="/request" className="hidden sm:inline-flex">
               <Button
-                variant="signin"
-                className="h-8 px-4 text-xs font-semibold"
+                variant="outline"
+                size="sm"
+                className="h-9 px-4 text-xs font-bold rounded-full gap-1.5 border-border bg-card hover:bg-muted text-foreground"
               >
-                Admin Sign In
+                <Sparkles className="h-3.5 w-3.5 text-amber-600 dark:text-[#ffd233]" />
+                <span>Custom Build</span>
               </Button>
             </Link>
 
-            <a
-              href={waLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden sm:inline-flex"
-            >
+            {/* Dark & Light Mode Switcher */}
+            <ThemeToggle />
+
+            {/* WhatsApp CTA */}
+            <a href={waLink} target="_blank" rel="noopener noreferrer" className="inline-flex">
               <Button
                 variant="default"
                 size="sm"
-                className="gap-2 font-medium"
+                className="h-9 px-4 text-xs font-bold rounded-full bg-[#ffd233] hover:bg-[#f5c71a] text-black gap-1.5 shadow-xs"
               >
-                <MessageSquare className="h-4 w-4" />
+                <MessageSquare className="h-3.5 w-3.5" />
                 <span>WhatsApp</span>
               </Button>
             </a>
@@ -123,9 +121,9 @@ export function Navbar() {
             <Button
               variant="ghost"
               size="icon"
-              className="md:hidden text-white"
+              className="md:hidden text-foreground rounded-full h-9 w-9"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Toggle menu"
+              aria-label="Toggle mobile menu"
             >
               {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
@@ -133,69 +131,44 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Mobile drawer */}
+      {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-b border-[#232323] bg-black px-4 pt-2 pb-6 space-y-4 animate-in slide-in-from-top-2 duration-150">
-          <form onSubmit={handleSearchSubmit} className="relative w-full pt-2">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#808080]" />
+        <div className="md:hidden border-t border-border bg-background px-4 pt-3 pb-6 space-y-3 animate-in slide-in-from-top-2 duration-150">
+          <form onSubmit={handleSearchSubmit} className="relative w-full">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search workflows..."
-              className="w-full h-11 pl-10 pr-3 text-sm rounded-[8px] border border-[#414141] bg-[#2d2d2d] text-white focus:outline-none focus:border-white"
+              className="w-full h-10 pl-10 pr-4 text-xs rounded-full border border-border bg-card text-foreground focus:outline-none focus:border-[#ffd233]"
             />
           </form>
 
-          <nav className="flex flex-col space-y-1">
+          <nav className="flex flex-col space-y-1 pt-1">
             <Link
               href="/workflows"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-between px-3 py-2.5 rounded-[8px] text-sm text-white hover:bg-[#232323]"
+              className="flex items-center justify-between px-4 py-2.5 rounded-full text-xs font-bold text-foreground hover:bg-muted"
             >
               <span className="flex items-center gap-2">
-                <Layers className="h-4 w-4 text-[#e50914]" />
-                Browse All Workflows
+                <Layers className="h-4 w-4 text-amber-500" />
+                Browse All Blueprints
               </span>
-              <ArrowRight className="h-4 w-4 text-[#808080]" />
+              <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
             </Link>
             <Link
               href="/request"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-between px-3 py-2.5 rounded-[8px] text-sm text-white hover:bg-[#232323]"
+              className="flex items-center justify-between px-4 py-2.5 rounded-full text-xs font-bold text-foreground hover:bg-muted"
             >
               <span className="flex items-center gap-2">
-                <Zap className="h-4 w-4 text-[#e50914]" />
-                Request Custom Workflow
+                <Sparkles className="h-4 w-4 text-amber-500" />
+                Request Custom Engineering
               </span>
-              <ArrowRight className="h-4 w-4 text-[#808080]" />
-            </Link>
-            <Link
-              href="/login"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-between px-3 py-2.5 rounded-[8px] text-sm text-[#808080] hover:bg-[#232323]"
-            >
-              <span className="flex items-center gap-2">
-                <ShieldCheck className="h-4 w-4" />
-                Admin Portal
-              </span>
-              <ArrowRight className="h-4 w-4 text-[#808080]" />
+              <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
             </Link>
           </nav>
-
-          <div className="pt-2">
-            <a
-              href={waLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full block"
-            >
-              <Button variant="default" className="w-full justify-center gap-2 font-semibold">
-                <MessageSquare className="h-4 w-4" />
-                Direct WhatsApp Contact
-              </Button>
-            </a>
-          </div>
         </div>
       )}
     </header>

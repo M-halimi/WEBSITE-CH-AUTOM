@@ -1,8 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
+import { Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function ThemeToggle() {
@@ -15,29 +15,25 @@ export function ThemeToggle() {
 
   if (!mounted) {
     return (
-      <Button
-        variant="ghost"
-        size="icon"
-        className="w-9 h-9 opacity-50"
-        aria-label="Toggle theme"
-      >
-        <Sun className="h-4 w-4" />
-      </Button>
+      <div className="h-9 w-9 rounded-full border border-border bg-transparent" />
     );
   }
+
+  const isDark = theme === "dark";
 
   return (
     <Button
       variant="ghost"
       size="icon"
-      className="w-9 h-9 rounded-full"
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      aria-label="Toggle theme"
+      onClick={() => setTheme(isDark ? "light" : "dark")}
+      className="h-9 w-9 rounded-full border border-border hover:bg-muted text-foreground transition-transform active:scale-95 shadow-xs"
+      aria-label="Toggle dark and light mode"
+      title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
     >
-      {theme === "dark" ? (
-        <Sun className="h-4 w-4 text-amber-400 transition-all hover:rotate-45" />
+      {isDark ? (
+        <Sun className="h-4 w-4 text-[#ffd233] transition-all rotate-0 scale-100" />
       ) : (
-        <Moon className="h-4 w-4 text-zinc-700 transition-all hover:-rotate-12" />
+        <Moon className="h-4 w-4 text-foreground transition-all rotate-0 scale-100" />
       )}
     </Button>
   );

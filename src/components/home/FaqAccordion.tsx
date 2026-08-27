@@ -49,31 +49,31 @@ export function FaqAccordion() {
   };
 
   return (
-    <div className="space-y-2 max-w-4xl mx-auto w-full">
+    <div className="space-y-3 max-w-3xl mx-auto w-full">
       {faqs.map((faq, idx) => {
         const isOpen = openIndex === idx;
         return (
           <div
             key={idx}
-            className="rounded-[8px] bg-[#232323] hover:bg-[#2d2d2d] transition-colors overflow-hidden"
+            className="rounded-3xl border border-border bg-card hover:border-amber-300 transition-colors overflow-hidden shadow-xs modern-saas-card"
           >
             <button
               onClick={() => toggleIndex(idx)}
-              className="w-full flex items-center justify-between p-6 text-left text-white text-lg sm:text-2xl font-normal focus:outline-none"
+              className="w-full flex items-center justify-between p-5 sm:p-6 text-left text-foreground text-sm sm:text-base font-bold focus:outline-none"
               aria-expanded={isOpen}
             >
               <span>{faq.question}</span>
               <span className="shrink-0 ml-4">
                 {isOpen ? (
-                  <X className="h-6 w-6 sm:h-8 sm:w-8 text-white transition-transform" />
+                  <X className="h-4 w-4 text-foreground transition-transform" />
                 ) : (
-                  <Plus className="h-6 w-6 sm:h-8 sm:w-8 text-white transition-transform" />
+                  <Plus className="h-4 w-4 text-foreground transition-transform" />
                 )}
               </span>
             </button>
 
             {isOpen && (
-              <div className="px-6 pb-6 pt-2 text-[#cbd5e1] text-sm sm:text-base leading-relaxed border-t border-[#414141]/40 animate-in fade-in-50 duration-150">
+              <div className="px-5 sm:px-6 pb-6 pt-1 text-muted-foreground text-xs sm:text-sm leading-relaxed border-t border-border/60 animate-in fade-in-50 duration-150">
                 {faq.answer}
               </div>
             )}

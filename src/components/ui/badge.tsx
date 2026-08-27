@@ -3,23 +3,28 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const badgeVariants = cva(
-  "inline-flex items-center rounded-[6px] border px-2.5 py-0.5 text-xs font-medium transition-colors focus:outline-none",
+  "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
   {
     variants: {
       variant: {
         default:
-          "border-[#414141] bg-[#232323] text-white",
+          "bg-[#ffd233] text-black border-transparent shadow-xs font-bold",
         secondary:
-          "border-[#414141] bg-[#161616] text-[#808080]",
+          "bg-muted border border-border text-foreground",
         destructive:
-          "border-[#e50914] bg-[#e50914] text-white",
-        outline: "border-[#414141] bg-transparent text-white",
-        success: "border-[#414141] bg-[#232323] text-white",
-        warning: "border-[#414141] bg-[#232323] text-[#808080]",
-        info: "border-[#414141] bg-[#232323] text-white",
-        purple: "border-[#414141] bg-[#232323] text-white",
-        glow: "border-[#e50914] bg-[#e50914] text-white font-bold",
-        red: "border-[#e50914] bg-[#e50914] text-white font-bold",
+          "bg-destructive/10 text-destructive border border-destructive/20",
+        outline:
+          "text-foreground border border-border bg-card",
+        aloe:
+          "bg-amber-100 dark:bg-amber-950/50 text-amber-900 dark:text-amber-300 border border-amber-300 font-semibold",
+        pistachio:
+          "bg-yellow-100 dark:bg-yellow-950/50 text-yellow-900 dark:text-yellow-300 border border-yellow-300 font-semibold",
+        glow:
+          "bg-[#ffd233]/20 text-black dark:text-[#ffd233] border border-[#ffd233]/40 font-bold",
+        success:
+          "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20",
+        warning:
+          "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20",
       },
     },
     defaultVariants: {

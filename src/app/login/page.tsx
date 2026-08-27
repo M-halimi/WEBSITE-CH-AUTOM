@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Zap, Lock, ShieldCheck, Loader2 } from "lucide-react";
+import { Lock, ShieldCheck, Loader2, Sparkles, KeyRound, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { adminLogin } from "@/actions/authActions";
@@ -28,36 +28,39 @@ export default function LoginPage() {
       router.push("/admin");
       router.refresh();
     } else {
-      setErrorMessage(res.error || "Invalid credentials.");
+      setErrorMessage(res.error || "Invalid email or password.");
     }
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center p-4 bg-black text-white">
-      <div className="w-full max-w-md space-y-6">
+    <div className="min-h-[82vh] flex items-center justify-center p-4 bg-background text-foreground transition-colors duration-300">
+      <div className="w-full max-w-md space-y-6 animate-in fade-in-50 zoom-in-95 duration-200">
+        
+        {/* Brand Logo & Title */}
         <div className="text-center space-y-2">
           <Link href="/" className="inline-flex items-center gap-2 group">
-            <div className="h-10 w-10 rounded-[8px] bg-[#e50914] flex items-center justify-center text-white font-black text-xl">
-              <Zap className="h-6 w-6 fill-current" />
+            <div className="h-10 w-10 rounded-full bg-[#ffd233] text-black flex items-center justify-center font-bold text-base shadow-xs group-hover:scale-105 transition-transform">
+              ✦
             </div>
-            <span className="font-black text-2xl tracking-tighter text-[#e50914] uppercase">
-              AUTOFLOWS
+            <span className="text-2xl font-extrabold tracking-tight text-foreground">
+              AutoFlows <span className="text-xs px-2 py-0.5 rounded-full bg-foreground text-background">Hub</span>
             </span>
           </Link>
-          <h1 className="text-2xl sm:text-3xl font-black text-white uppercase">Admin Sign In</h1>
-          <p className="text-xs text-[#808080]">Enter administrator credentials to manage catalog and CRM leads.</p>
+          <h1 className="text-2xl font-extrabold text-foreground tracking-tight">Admin Sign In</h1>
+          <p className="text-xs text-muted-foreground">Authenticate to access catalog control and client leads CRM.</p>
         </div>
 
-        <div className="rounded-[8px] border border-[#414141] bg-[#232323] p-6 sm:p-8 space-y-6">
+        {/* Login Card */}
+        <div className="rounded-3xl border border-border bg-card p-7 sm:p-8 space-y-6 shadow-md modern-saas-card">
           {errorMessage && (
-            <div className="p-3 rounded-[8px] bg-[#e50914]/10 border border-[#e50914] text-[#e50914] text-xs font-medium text-center">
+            <div className="p-3.5 rounded-2xl bg-destructive/10 border border-destructive/30 text-destructive text-xs font-medium text-center animate-in fade-in-0">
               {errorMessage}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} method="POST" className="space-y-4">
             <div>
-              <label className="text-xs font-medium text-white block mb-1.5">
+              <label className="text-xs font-bold text-foreground block mb-1.5">
                 Admin Email Address
               </label>
               <Input
@@ -65,14 +68,15 @@ export default function LoginPage() {
                 type="email"
                 name="email"
                 defaultValue="admin@workflows.com"
-                className="h-12"
+                placeholder="admin@workflows.com"
+                className="h-11"
               />
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label className="text-xs font-medium text-white">
-                  Password
+                <label className="text-xs font-bold text-foreground">
+                  Master Password
                 </label>
               </div>
               <Input
@@ -80,30 +84,42 @@ export default function LoginPage() {
                 type="password"
                 name="password"
                 defaultValue="admin123456"
-                className="h-12"
+                placeholder="••••••••••••"
+                className="h-11"
               />
             </div>
 
             <Button
               type="submit"
               disabled={pending}
-              className="w-full h-12 text-sm font-semibold rounded-[8px] bg-[#e50914] hover:bg-[#c11119] text-white mt-2"
+              className="w-full h-12 text-xs sm:text-sm font-bold rounded-full bg-[#ffd233] hover:bg-[#f5c71a] text-black mt-2 shadow-xs transition-transform active:scale-98"
             >
               {pending ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                  Verifying Session...
+                  Verifying Credentials...
                 </>
               ) : (
-                "Sign In"
+                <>
+                  <span>Sign In to Admin Portal</span>
+                  <ArrowRight className="h-4 w-4 ml-1.5" />
+                </>
               )}
             </Button>
           </form>
 
-          <div className="p-3 rounded-[8px] bg-[#161616] border border-[#414141] text-[11px] text-[#808080] flex items-center gap-2">
-            <Lock className="h-3.5 w-3.5 text-[#e50914] shrink-0" />
-            <span>Default Seed: admin@workflows.com / admin123456</span>
+          <div className="p-4 rounded-2xl bg-muted/60 border border-border text-[11px] text-muted-foreground flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <KeyRound className="h-4 w-4 shrink-0 text-amber-600 dark:text-[#ffd233]" />
+              <span>Default Seed: <strong className="text-foreground">admin@workflows.com</strong> / <strong className="text-foreground">admin123456</strong></span>
+            </div>
           </div>
+        </div>
+
+        <div className="text-center">
+          <Link href="/" className="text-xs text-muted-foreground hover:text-foreground font-medium hover:underline">
+            ← Return to Public Marketplace
+          </Link>
         </div>
       </div>
     </div>

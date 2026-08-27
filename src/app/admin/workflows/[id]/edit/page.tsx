@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { WorkflowForm } from "@/components/admin/WorkflowForm";
 
+export const dynamic = "force-dynamic";
+
 interface EditWorkflowPageProps {
   params: {
     id: string;

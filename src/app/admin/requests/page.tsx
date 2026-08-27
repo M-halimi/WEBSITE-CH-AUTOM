@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { LeadStatusSelector } from "@/components/admin/LeadStatusSelector";
 import { formatDate } from "@/lib/utils";
 
-export const revalidate = 0; // Dynamic fetch
+export const dynamic = "force-dynamic";
 
 export default async function AdminRequestsPage() {
   const leads = await prisma.leadRequest.findMany({
@@ -30,8 +30,7 @@ export default async function AdminRequestsPage() {
             Lead Requests & Inquiries CRM
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
-            Total {leads.length} incoming leads. Update statuses and reach out
-            via WhatsApp with 1 click.
+            Total {leads.length} incoming leads. Update statuses and reach out via WhatsApp with 1 click.
           </p>
         </div>
       </div>
@@ -41,7 +40,7 @@ export default async function AdminRequestsPage() {
           {leads.map((lead) => (
             <div
               key={lead.id}
-              className="rounded-2xl border border-border bg-card p-5 sm:p-6 shadow-sm hover:shadow-md transition-all space-y-4"
+              className="rounded-3xl border border-border bg-card p-5 sm:p-6 shadow-sm hover:shadow-md transition-all space-y-4"
             >
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-border/60">
                 <div>
@@ -50,7 +49,7 @@ export default async function AdminRequestsPage() {
                       {lead.name}
                     </h3>
                     {lead.company && (
-                      <span className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">
+                      <span className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-muted px-2.5 py-0.5 rounded-full">
                         <Building2 className="h-3 w-3" />
                         {lead.company}
                       </span>
@@ -87,13 +86,13 @@ export default async function AdminRequestsPage() {
                     Requested:
                   </span>
                   {lead.workflow ? (
-                    <Badge variant="outline" className="text-xs bg-muted/40">
+                    <Badge variant="outline" className="text-xs">
                       {lead.workflow.title}
                     </Badge>
                   ) : (
                     <Badge
                       variant="glow"
-                      className="text-xs bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
+                      className="text-xs"
                     >
                       Custom Bespoke Workflow
                     </Badge>
@@ -101,7 +100,7 @@ export default async function AdminRequestsPage() {
                 </div>
 
                 {lead.message && (
-                  <div className="p-3 rounded-xl bg-muted/40 border border-border/40 text-muted-foreground text-xs leading-relaxed mt-2">
+                  <div className="p-3.5 rounded-2xl bg-muted/50 border border-border/60 text-muted-foreground text-xs leading-relaxed mt-2">
                     <strong className="text-foreground block mb-1">
                       Message / Requirements:
                     </strong>
@@ -121,8 +120,7 @@ export default async function AdminRequestsPage() {
             No requests received yet
           </h3>
           <p className="text-xs text-muted-foreground">
-            When visitors submit a lead form on workflow detail pages or the
-            custom request page, their details will appear here.
+            When visitors submit a lead form on workflow detail pages or the custom request page, their details will appear here.
           </p>
         </div>
       )}

@@ -31,14 +31,14 @@ export function WorkflowFilters({
   const [q, setQ] = React.useState(searchQuery);
 
   const updateParam = (key: string, value: string) => {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParams ? searchParams.toString() : "");
     if (value && value !== "ALL") {
       params.set(key, value);
     } else {
       params.delete(key);
     }
     params.delete("page");
-    router.push(`${pathname}?${params.toString()}`);
+    router.push(`${pathname || "/workflows"}?${params.toString()}`);
   };
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -48,7 +48,7 @@ export function WorkflowFilters({
 
   const clearAllFilters = () => {
     setQ("");
-    router.push(pathname);
+    router.push(pathname || "/workflows");
   };
 
   const hasActiveFilters = Boolean(
@@ -60,55 +60,55 @@ export function WorkflowFilters({
   );
 
   return (
-    <div className="space-y-4 rounded-[8px] border border-[#414141] bg-[#232323] p-5 sm:p-6">
-      {/* Top Search & Sort Row */}
+    <div className="space-y-4 rounded-3xl border border-border bg-card p-6 shadow-sm">
+      {/* Search & Sort Row */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
         <form onSubmit={handleSearchSubmit} className="relative flex-1">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#808080]" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
             type="text"
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Search by title, description, node type..."
-            className="w-full h-11 pl-10 pr-24 rounded-[8px] border border-[#414141] bg-[#2d2d2d] text-sm text-white focus:outline-none focus:border-white transition-colors placeholder:text-[#808080]"
+            placeholder="Search blueprints by title, integration, or outcome..."
+            className="w-full h-11 pl-10 pr-24 rounded-full border border-border bg-background text-xs sm:text-sm text-foreground focus:outline-none focus:border-[#ffd233] transition-colors placeholder:text-muted-foreground"
           />
           <Button
             type="submit"
             size="sm"
-            className="absolute right-1.5 top-1/2 -translate-y-1/2 h-8 text-xs font-semibold px-4 rounded-[6px] bg-[#e50914] text-white hover:bg-[#c11119]"
+            className="absolute right-1.5 top-1/2 -translate-y-1/2 h-8 text-xs font-bold px-4 rounded-full bg-[#ffd233] text-black hover:bg-[#f5c71a]"
           >
             Search
           </Button>
         </form>
 
         {/* Sort selector */}
-        <div className="flex items-center gap-2 min-w-[200px]">
-          <ArrowUpDown className="h-4 w-4 text-[#808080] hidden sm:inline" />
+        <div className="flex items-center gap-2 min-w-[190px]">
+          <ArrowUpDown className="h-4 w-4 text-muted-foreground hidden sm:inline" />
           <select
             value={selectedSort}
             onChange={(e) => updateParam("sort", e.target.value)}
             aria-label="Sort workflows"
-            className="h-11 w-full rounded-[8px] border border-[#414141] bg-[#2d2d2d] px-3 text-xs font-medium text-white focus:outline-none focus:border-white"
+            className="h-11 w-full rounded-full border border-border bg-background px-4 text-xs font-medium text-foreground focus:outline-none focus:border-[#ffd233]"
           >
             <option value="newest">Sort: Newest First</option>
             <option value="popular">Sort: Most Popular</option>
-            <option value="steps">Sort: Most Steps</option>
+            <option value="steps">Sort: Node Count</option>
           </select>
         </div>
       </div>
 
       {/* Filter Dropdowns */}
-      <div className="pt-3 border-t border-[#414141] grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <div className="pt-3 border-t border-border grid grid-cols-1 sm:grid-cols-3 gap-3">
         {/* Category Filter */}
         <div>
-          <label className="text-[11px] font-medium uppercase tracking-wider text-[#808080] block mb-1.5">
+          <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground block mb-1.5">
             Category
           </label>
           <select
             value={selectedCategory}
             onChange={(e) => updateParam("category", e.target.value)}
             aria-label="Filter by category"
-            className="h-10 w-full rounded-[8px] border border-[#414141] bg-[#2d2d2d] px-3 text-xs text-white focus:outline-none focus:border-white"
+            className="h-10 w-full rounded-full border border-border bg-background px-3 text-xs text-foreground focus:outline-none focus:border-[#ffd233]"
           >
             <option value="">All Categories</option>
             {categories.map((c) => (
@@ -121,14 +121,14 @@ export function WorkflowFilters({
 
         {/* Platform Filter */}
         <div>
-          <label className="text-[11px] font-medium uppercase tracking-wider text-[#808080] block mb-1.5">
+          <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground block mb-1.5">
             Platform / Engine
           </label>
           <select
             value={selectedPlatform}
             onChange={(e) => updateParam("platform", e.target.value)}
             aria-label="Filter by platform"
-            className="h-10 w-full rounded-[8px] border border-[#414141] bg-[#2d2d2d] px-3 text-xs text-white focus:outline-none focus:border-white"
+            className="h-10 w-full rounded-full border border-border bg-background px-3 text-xs text-foreground focus:outline-none focus:border-[#ffd233]"
           >
             <option value="">All Platforms</option>
             {platforms.map((p) => (
@@ -141,33 +141,33 @@ export function WorkflowFilters({
 
         {/* Difficulty Filter */}
         <div>
-          <label className="text-[11px] font-medium uppercase tracking-wider text-[#808080] block mb-1.5">
-            Difficulty Level
+          <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground block mb-1.5">
+            Complexity Tier
           </label>
           <select
             value={selectedDifficulty}
             onChange={(e) => updateParam("difficulty", e.target.value)}
             aria-label="Filter by difficulty"
-            className="h-10 w-full rounded-[8px] border border-[#414141] bg-[#2d2d2d] px-3 text-xs text-white focus:outline-none focus:border-white"
+            className="h-10 w-full rounded-full border border-border bg-background px-3 text-xs text-foreground focus:outline-none focus:border-[#ffd233]"
           >
             <option value="">All Difficulties</option>
-            <option value="BEGINNER">Beginner (15 min setup)</option>
-            <option value="INTERMEDIATE">Intermediate (Standard Webhooks)</option>
-            <option value="ADVANCED">Advanced (Multi-Agent / AI)</option>
+            <option value="BEGINNER">Beginner (Quick Setup)</option>
+            <option value="INTERMEDIATE">Intermediate (Webhooks)</option>
+            <option value="ADVANCED">Advanced (Multi-Node AI)</option>
           </select>
         </div>
       </div>
 
       {/* Active filters bar & Clear button */}
       {hasActiveFilters && (
-        <div className="flex items-center justify-between pt-2 border-t border-[#414141] text-xs text-[#808080]">
+        <div className="flex items-center justify-between pt-2 border-t border-border text-xs text-muted-foreground">
           <span className="flex items-center gap-1.5">
-            <SlidersHorizontal className="h-3.5 w-3.5 text-[#e50914]" />
+            <SlidersHorizontal className="h-3.5 w-3.5 text-amber-600 dark:text-[#ffd233]" />
             Filters active
           </span>
           <button
             onClick={clearAllFilters}
-            className="text-xs text-[#e50914] hover:underline font-medium flex items-center gap-1"
+            className="text-xs text-amber-600 dark:text-[#ffd233] hover:underline font-semibold flex items-center gap-1"
           >
             <X className="h-3.5 w-3.5" />
             Reset all filters
