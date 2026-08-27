@@ -1,5 +1,5 @@
 export function generateWhatsAppLink({
-  phoneNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "+212625945061",
+  phoneNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "+212600000000",
   workflowTitle,
   workflowSlug,
 }: {
@@ -19,7 +19,7 @@ export function generateWhatsAppLink({
 }
 
 export function generateLeadWhatsAppLink({
-  phoneNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "+212625945061",
+  phoneNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "+212600000000",
   name,
   email,
   whatsapp,
