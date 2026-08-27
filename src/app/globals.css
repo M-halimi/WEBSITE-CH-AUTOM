@@ -4,48 +4,26 @@
 
 @layer base {
   :root {
-    --background: 0 0% 0%; /* #000000 */
-    --foreground: 0 0% 100%; /* #ffffff */
-    --card: 0 0% 13.7%; /* #232323 */
-    --card-foreground: 0 0% 100%;
-    --popover: 0 0% 13.7%;
-    --popover-foreground: 0 0% 100%;
-    --primary: 357 92% 47%; /* #e50914 Netflix Red */
+    --background: 0 0% 100%; /* #ffffff True White Canvas */
+    --foreground: 0 0% 13.3%; /* #222222 Ink Near-Black */
+    --card: 0 0% 100%; /* #ffffff */
+    --card-foreground: 0 0% 13.3%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 13.3%;
+    --primary: 20 89% 53%; /* #f1641e Etsy Orange */
     --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 13.7%; /* #232323 */
-    --secondary-foreground: 0 0% 100%;
-    --muted: 0 0% 8.6%; /* #161616 */
-    --muted-foreground: 0 0% 50.2%; /* #808080 */
-    --accent: 0 0% 13.7%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 357 92% 47%;
+    --secondary: 0 0% 96.5%; /* #f6f6f6 Surface Soft */
+    --secondary-foreground: 0 0% 13.3%;
+    --muted: 0 0% 96.5%; /* #f6f6f6 */
+    --muted-foreground: 0 0% 35%; /* #595959 */
+    --accent: 38 78% 95%; /* #fdf6e8 Surface Cream */
+    --accent-foreground: 31 64% 39%; /* #a66523 Etsy Brown */
+    --destructive: 4 72% 41%; /* #b3261e */
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 25.5%; /* #414141 */
-    --input: 0 0% 17.6%; /* #2d2d2d */
-    --ring: 357 92% 47%;
+    --border: 0 0% 84%; /* #d6d6d6 Hairline */
+    --input: 0 0% 74%; /* #bdbdbd */
+    --ring: 20 89% 53%;
     --radius: 8px;
-  }
-
-  .dark {
-    --background: 0 0% 0%;
-    --foreground: 0 0% 100%;
-    --card: 0 0% 13.7%;
-    --card-foreground: 0 0% 100%;
-    --popover: 0 0% 13.7%;
-    --popover-foreground: 0 0% 100%;
-    --primary: 357 92% 47%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 13.7%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: 0 0% 8.6%;
-    --muted-foreground: 0 0% 50.2%;
-    --accent: 0 0% 13.7%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 357 92% 47%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 25.5%;
-    --input: 0 0% 17.6%;
-    --ring: 357 92% 47%;
   }
 }
 
@@ -54,46 +32,41 @@
     @apply border-border;
   }
   body {
-    @apply bg-black text-white antialiased;
-    background-color: #000000;
-    color: #ffffff;
-    font-family: 'Netflix Sans', 'Helvetica Neue', 'Segoe UI', Roboto, Ubuntu, sans-serif;
+    background-color: #ffffff;
+    color: #222222;
+    font-family: 'Graphik Webfont', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
   }
 }
 
-/* Netflix Signature Gradient Wash for Trending Rail */
-.netflix-gradient-rail {
-  background: linear-gradient(90deg, #192247 0%, #210e17 35%, #461518 70%, #6f181d 100%);
+/* Custom Etsy Serif Wordmark */
+.etsy-wordmark {
+  font-family: 'Cooper BT', 'Guru', 'Recoleta', Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -0.5px;
 }
 
-/* Netflix Signature Outline-Stroked Rank Numerals (1, 2, 3, 4) */
-.stroke-numeral {
-  font-family: 'Netflix Sans', 'Helvetica Neue', 'Segoe UI', Roboto, Ubuntu, sans-serif;
-  font-weight: 900;
-  -webkit-text-stroke: 4px #595959;
-  -webkit-text-fill-color: #000000;
-  line-height: 0.8;
-  user-select: none;
+/* Etsy Card Hover Float Effect */
+.etsy-card-hover {
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+.etsy-card-hover:hover {
+  box-shadow: rgba(0, 0, 0, 0.04) 0 1px 4px 0, rgba(0, 0, 0, 0.08) 0 4px 12px 0;
+  transform: translateY(-2px);
 }
 
-@media (min-width: 768px) {
-  .stroke-numeral {
-    -webkit-text-stroke: 6px #595959;
-  }
-}
-
-/* Custom scrollbar for horizontal rails */
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
   height: 6px;
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #161616;
+  background: #f6f6f6;
 }
 ::-webkit-scrollbar-thumb {
-  background: #414141;
-  border-radius: 8px;
+  background: #d6d6d6;
+  border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #e50914;
+  background: #f1641e;
 }

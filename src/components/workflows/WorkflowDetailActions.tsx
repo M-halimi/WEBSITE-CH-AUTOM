@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { MessageSquare, Sparkles, Share2, Check } from "lucide-react";
+import { MessageSquare, Sparkles, Share2, Check, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LeadFormModal } from "./LeadFormModal";
 import { generateWhatsAppLink } from "@/lib/whatsapp";
@@ -33,32 +33,31 @@ export function WorkflowDetailActions({ workflow }: WorkflowDetailActionsProps) 
 
   return (
     <>
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full">
         <Button
           size="lg"
           onClick={() => setModalOpen(true)}
-          className="rounded-[8px] font-medium bg-[#e50914] hover:bg-[#c11119] text-white text-base px-6 gap-2"
+          className="flex-1 rounded-full font-semibold bg-[#f1641e] hover:bg-[#d44e0d] text-white text-sm h-12 shadow-sm gap-2"
         >
           <Sparkles className="h-4 w-4" />
           Get This Automation
         </Button>
 
-        <a href={waLink} target="_blank" rel="noopener noreferrer">
-          <Button variant="secondary" size="lg" className="rounded-[8px] font-medium text-base gap-2 bg-[#232323] hover:bg-[#2d2d2d] text-white">
-            <MessageSquare className="h-4 w-4 text-[#e50914]" />
-            Contact on WhatsApp
+        <a href={waLink} target="_blank" rel="noopener noreferrer" className="flex-1">
+          <Button variant="secondary" size="lg" className="w-full rounded-full font-semibold text-sm h-12 gap-2 bg-white hover:bg-[#f6f6f6] text-[#222222] border border-[#bdbdbd]">
+            <MessageSquare className="h-4 w-4 text-[#f1641e]" />
+            WhatsApp Inquiry
           </Button>
         </a>
 
         <Button
           variant="outline"
-          size="lg"
+          size="icon"
           onClick={handleShare}
-          className="rounded-[8px] text-xs gap-1.5 border-[#414141] hover:bg-[#232323]"
-          title="Share workflow link"
+          className="h-12 w-12 rounded-full border-[#bdbdbd] hover:bg-[#f6f6f6] shrink-0 text-[#222222]"
+          title="Share blueprint"
         >
-          {copied ? <Check className="h-4 w-4 text-[#e50914]" /> : <Share2 className="h-4 w-4" />}
-          <span>{copied ? "Link Copied!" : "Share"}</span>
+          {copied ? <Check className="h-4 w-4 text-[#258635]" /> : <Share2 className="h-4 w-4" />}
         </Button>
       </div>
 

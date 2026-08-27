@@ -3,35 +3,39 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center whitespace-nowrap text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f1641e] disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
         default:
-          "bg-[#e50914] text-white hover:bg-[#c11119] rounded-[8px] font-medium transition-all active:scale-[0.99]",
-        cta:
-          "bg-[#e50914] text-white hover:bg-[#c11119] rounded-[8px] font-medium text-lg sm:text-2xl px-6 py-3 transition-all",
-        signin:
-          "bg-[#e50914] text-white hover:bg-[#c11119] rounded-[4px] font-medium text-sm px-4 py-1",
-        destructive:
-          "bg-[#e50914] text-white hover:bg-[#c11119] rounded-[8px]",
-        outline:
-          "border border-[#414141] bg-transparent text-white hover:bg-[#232323] rounded-[8px]",
+          "bg-[#f1641e] text-white hover:bg-[#d44e0d] active:bg-[#b83f08] rounded-full px-6 py-2.5 font-semibold transition-all",
+        primary:
+          "bg-[#f1641e] text-white hover:bg-[#d44e0d] active:bg-[#b83f08] rounded-full px-6 py-2.5 font-semibold transition-all",
         secondary:
-          "bg-[#232323] text-white hover:bg-[#2d2d2d] rounded-[8px] border-0",
-        ghost: "hover:bg-[#232323] text-white rounded-[8px]",
-        link: "text-[#e50914] underline-offset-4 hover:underline",
+          "bg-white text-[#222222] border border-[#bdbdbd] hover:bg-[#f6f6f6] hover:border-[#222222] rounded-[8px] font-medium transition-all",
+        seller:
+          "bg-[#a66523] text-white hover:bg-[#8e5218] rounded-full px-6 py-2.5 font-semibold transition-all",
+        chip:
+          "bg-[#f6f6f6] text-[#222222] hover:bg-[#e6e6e6] rounded-full px-4 py-1.5 font-medium text-xs border border-transparent",
+        outline:
+          "border border-[#222222] bg-white text-[#222222] hover:bg-[#f6f6f6] rounded-full font-medium",
+        ghost:
+          "hover:bg-[#f6f6f6] text-[#222222] rounded-full",
+        link:
+          "text-[#f1641e] underline-offset-4 hover:underline font-medium",
         whatsapp:
-          "bg-[#e50914] text-white hover:bg-[#c11119] rounded-[8px] font-medium",
-        glow:
-          "bg-[#e50914] text-white hover:bg-[#c11119] rounded-[8px]",
+          "bg-[#f1641e] text-white hover:bg-[#d44e0d] rounded-full font-semibold",
+        signin:
+          "bg-[#f1641e] text-white hover:bg-[#d44e0d] rounded-full text-xs font-semibold px-4 py-1.5",
+        cta:
+          "bg-[#f1641e] text-white hover:bg-[#d44e0d] rounded-full font-semibold text-base px-7 py-3",
       },
       size: {
-        default: "h-10 px-5 py-2",
-        sm: "h-8 rounded-[6px] px-3 text-xs",
-        lg: "h-12 rounded-[8px] px-7 text-base font-medium",
-        xl: "h-14 rounded-[8px] px-8 text-xl font-medium",
-        icon: "h-9 w-9 rounded-[8px]",
+        default: "h-11 px-5 py-2",
+        sm: "h-9 px-3.5 text-xs",
+        lg: "h-12 px-7 text-base",
+        xl: "h-14 px-8 text-lg",
+        icon: "h-9 w-9 rounded-full",
       },
     },
     defaultVariants: {
