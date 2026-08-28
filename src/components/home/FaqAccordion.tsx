@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 "use client";
 
 import * as React from "react";
@@ -84,5 +83,3 @@ export function FaqAccordion() {
     </div>
   );
 }
-=======
->>>>>>> 7ee9ca6f04322930ec29228c493ddb72ee250ce5

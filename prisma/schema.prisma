@@ -60,6 +60,7 @@ model Workflow {
   views               Int                  @default(0)
   featured            Boolean              @default(false)
   price               String?              @default("Free / Included")
+  imageUrl            String?              // Thumbnail or banner preview image URL
   demoUrl             String?
   n8nJson             String?              // Raw JSON export if imported
   
@@ -124,5 +125,23 @@ model LeadRequest {
   workflow    Workflow? @relation(fields: [workflowId], references: [id], onDelete: SetNull)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+}
+
+model SiteSetting {
+  id               String   @id @default("default")
+  siteName         String   @default("AutoFlows Hub")
+  siteDescription  String   @default("The Commerce Automation Platform")
+  whatsappNumber   String   @default("+212600000000")
+  defaultCurrency  String   @default("MAD")
+  heroBadge        String   @default("Workflow Support & Growth")
+  heroTitle        String   @default("Automate Your Support Workflows")
+  heroSubtitle     String   @default("Streamline repetitive tasks and scale customer support with ease using smart, flexible, and fast workflows.")
+  ctaBadge         String   @default("Turnkey Enterprise Engineering")
+  ctaTitle         String   @default("Start automating your commerce infrastructure today.")
+  ctaDescription   String   @default("Connect with our certified engineers to build custom n8n, Meta Ads & WhatsApp pipelines in 48 hours.")
+  ctaButtonText    String   @default("Request Custom Blueprint")
+  ctaSecondaryText String   @default("WhatsApp Direct")
+  footerCopyright  String   @default("© 2026 AutoFlows Hub Inc. All rights reserved.")
+  updatedAt        DateTime @updatedAt
 }
 

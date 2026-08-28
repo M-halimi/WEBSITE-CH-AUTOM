@@ -79,45 +79,44 @@ export default function AdminImportPage() {
     if (res.success && res.workflow) {
       router.push(`/admin/workflows/${res.workflow.id}/edit`);
     } else {
-      setErrorMessage(res.error || "Failed to import workflow as draft.");
+      setErrorMessage(res.error || "Failed to create workflow draft.");
     }
   };
 
   const sampleN8nJson = JSON.stringify(
     {
-      name: "Sample n8n Lead Dispatcher",
+      name: "WhatsApp Order Confirmation & Google Sheet Logger",
       nodes: [
         {
-          name: "Webhook Inbound",
+          parameters: { httpMethod: "POST", path: "webhook-order" },
+          name: "Webhook Order Trigger",
           type: "n8n-nodes-base.webhook",
-          parameters: { path: "leads", httpMethod: "POST" },
         },
         {
-          name: "Parse JSON & Normalize",
-          type: "n8n-nodes-base.function",
-          parameters: { functionCode: "return items;" },
+          parameters: {
+            operation: "append",
+            sheetId: "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms",
+          },
+          name: "Append to Google Sheets",
+          type: "n8n-nodes-base.googleSheets",
         },
         {
-          name: "Verify Phone & Intent",
-          type: "n8n-nodes-base.if",
+          parameters: {
+            resource: "messages",
+            operation: "sendTemplate",
+            templateName: "order_confirmation_v1",
+          },
+          name: "Send WhatsApp Template",
+          type: "n8n-nodes-base.whatsapp",
+        },
+        {
           parameters: {
             conditions: {
-              string: [{ value1: "phone", operation: "isNotEmpty" }],
+              string: [{ value1: "={{ $json.total }}", value2: "100" }],
             },
           },
-        },
-        {
-          name: "Send WhatsApp Confirmation",
-          type: "n8n-nodes-base.httpRequest",
-          parameters: {
-            url: "https://graph.facebook.com/v18.0/messages",
-            method: "POST",
-          },
-        },
-        {
-          name: "Append to Master Google Sheet",
-          type: "n8n-nodes-base.googleSheets",
-          parameters: { operation: "append", sheetId: "CRM_LEADS_2026" },
+          name: "Check VIP Threshold",
+          type: "n8n-nodes-base.if",
         },
       ],
     },
@@ -126,16 +125,14 @@ export default function AdminImportPage() {
   );
 
   return (
-    <div className="space-y-8 max-w-4xl">
+    <div className="space-y-6 max-w-4xl">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground flex items-center gap-2">
-          <UploadCloud className="h-6 w-6 text-purple-500" />
-          n8n & Make JSON Import Center
+        <h1 className="text-xl sm:text-2xl font-black text-foreground dark:text-white tracking-tight flex items-center gap-2">
+          <UploadCloud className="h-5 w-5 text-amber-600 dark:text-[#ffd233]" />
+          n8n & Make JSON Importer
         </h1>
-        <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-          Upload or paste any exported n8n workflow JSON. We automatically parse
-          the nodes, triggers, actions, and create a Draft workflow for your
-          review.
+        <p className="text-xs text-muted-foreground dark:text-[#71717a] mt-0.5">
+          Upload or paste any exported n8n workflow JSON. Nodes and sequential execution are automatically detected.
         </p>
       </div>
 
@@ -147,15 +144,15 @@ export default function AdminImportPage() {
       )}
 
       {/* Upload Zone */}
-      <div className="rounded-2xl border border-dashed border-border bg-card/60 p-8 text-center space-y-4">
-        <div className="mx-auto h-12 w-12 rounded-full bg-purple-500/10 text-purple-500 flex items-center justify-center">
+      <div className="rounded-2xl border border-dashed border-border dark:border-[#26262e] bg-card dark:bg-[#141418] p-8 text-center space-y-4 transition-colors duration-300">
+        <div className="mx-auto h-12 w-12 rounded-xl bg-muted dark:bg-[#1e1e26] border border-border dark:border-[#2a2a34] text-amber-600 dark:text-[#ffd233] flex items-center justify-center">
           <FileJson className="h-6 w-6" />
         </div>
         <div>
-          <h3 className="text-sm font-bold text-foreground">
+          <h3 className="text-sm font-bold text-foreground dark:text-white">
             Upload n8n / Make JSON Export
           </h3>
-          <p className="text-xs text-muted-foreground mt-1">
+          <p className="text-xs text-muted-foreground dark:text-[#71717a] mt-1">
             Drag and drop your .json file here or click to browse.
           </p>
         </div>
@@ -168,24 +165,19 @@ export default function AdminImportPage() {
             onChange={handleFileUpload}
             className="hidden"
           />
-          <label htmlFor="jsonFileInput">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="cursor-pointer"
-              asChild
-            >
-              <span>Choose JSON File</span>
-            </Button>
+          <label
+            htmlFor="jsonFileInput"
+            className="cursor-pointer inline-flex items-center justify-center h-9 px-5 rounded-xl border border-border dark:border-[#2a2a34] bg-muted dark:bg-[#18181e] hover:bg-muted/80 dark:hover:bg-[#202028] text-foreground dark:text-white text-xs font-bold shadow-xs transition-all"
+          >
+            <span>Choose JSON File</span>
           </label>
         </div>
       </div>
 
       {/* Manual Paste Box */}
-      <div className="rounded-2xl border border-border bg-card p-6 space-y-4">
+      <div className="rounded-2xl border border-border dark:border-[#22222a] bg-card dark:bg-[#141418] p-6 space-y-4 shadow-xs transition-colors duration-300">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-bold text-foreground">
+          <h3 className="text-sm font-bold text-foreground dark:text-white">
             Or Paste JSON Data Directly
           </h3>
           <button
@@ -194,7 +186,7 @@ export default function AdminImportPage() {
               setJsonText(sampleN8nJson);
               handleParse(sampleN8nJson);
             }}
-            className="text-xs text-primary hover:underline font-medium"
+            className="text-xs text-amber-600 dark:text-[#ffd233] hover:underline font-semibold"
           >
             Insert Sample n8n JSON
           </button>
@@ -205,19 +197,19 @@ export default function AdminImportPage() {
           value={jsonText}
           onChange={(e) => setJsonText(e.target.value)}
           placeholder='{"name": "My n8n Workflow", "nodes": [...]}'
-          className="font-mono text-xs leading-relaxed"
+          className="font-mono text-xs leading-relaxed bg-background dark:bg-[#101014] border-border dark:border-[#22222a] text-foreground dark:text-white focus:border-[#ffd233]"
         />
 
         <Button
           type="button"
           onClick={() => handleParse()}
           disabled={parsing || !jsonText.trim()}
-          className="gap-2 text-xs font-semibold"
+          className="gap-2 text-xs font-bold rounded-xl bg-muted dark:bg-[#1b1b22] hover:bg-muted/80 dark:hover:bg-[#252530] text-foreground dark:text-white border border-border dark:border-[#26262e] shadow-xs"
         >
           {parsing ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <Loader2 className="h-4 w-4 animate-spin text-amber-600 dark:text-[#ffd233]" />
           ) : (
-            <Sparkles className="h-4 w-4" />
+            <Sparkles className="h-4 w-4 text-amber-600 dark:text-[#ffd233]" />
           )}
           Parse & Preview Nodes
         </Button>
@@ -225,28 +217,24 @@ export default function AdminImportPage() {
 
       {/* Preview Section */}
       {previewData && (
-        <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-6 sm:p-8 space-y-6 animate-in fade-in slide-in-from-bottom-3 duration-300">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-emerald-500/20">
+        <div className="rounded-2xl border border-emerald-500/30 bg-card dark:bg-[#141418] p-6 sm:p-8 space-y-6 animate-in fade-in slide-in-from-bottom-3 duration-300">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border dark:border-[#22222a]">
             <div>
-              <div className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-500 mb-1">
+              <div className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400 mb-1">
                 <CheckCircle2 className="h-4 w-4" /> Parsed Successfully
               </div>
-              <h3 className="text-xl font-bold text-foreground">
+              <h3 className="text-xl font-bold text-foreground dark:text-white">
                 {previewData.title}
               </h3>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Detected{" "}
-                <strong className="text-foreground">
-                  {previewData.nodesCount} nodes
-                </strong>{" "}
-                in sequence.
+              <p className="text-xs text-muted-foreground dark:text-[#71717a] mt-0.5">
+                Detected <strong className="text-foreground dark:text-white">{previewData.nodesCount} nodes</strong> in sequence.
               </p>
             </div>
 
             <Button
               onClick={handleImportAsDraft}
               disabled={importing}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold gap-2 text-xs"
+              className="bg-[#ffd233] hover:bg-[#f5c71a] text-black font-bold gap-2 text-xs h-10 px-6 rounded-xl shadow-md shadow-[#ffd233]/20"
             >
               {importing ? (
                 <>
@@ -255,36 +243,36 @@ export default function AdminImportPage() {
                 </>
               ) : (
                 <>
-                  <span>Import as Draft Workflow</span>
+                  <span>Create Workflow Draft</span>
                   <ArrowRight className="h-4 w-4" />
                 </>
               )}
             </Button>
           </div>
 
-          {/* Detected Steps Preview */}
+          {/* Node Cards Preview */}
           <div className="space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-              Detected Pipeline Nodes:
+            <h4 className="text-xs font-bold text-muted-foreground dark:text-[#71717a] uppercase tracking-wider">
+              Detected Pipeline Steps ({previewData.steps?.length})
             </h4>
-            <div className="space-y-2">
-              {previewData.steps.map((s: any, idx: number) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {previewData.steps?.map((step: any, idx: number) => (
                 <div
                   key={idx}
-                  className="flex items-center justify-between p-3 rounded-xl border border-border bg-card text-xs"
+                  className="rounded-xl border border-border dark:border-[#22222a] bg-muted/40 dark:bg-[#1a1a22] p-3.5 space-y-1.5 text-xs"
                 >
-                  <div className="flex items-center gap-2.5">
-                    <Badge variant="outline" className="text-[10px] font-mono">
-                      #{s.order}
-                    </Badge>
-                    <span className="font-bold text-foreground">{s.name}</span>
-                    <span className="text-muted-foreground text-[11px]">
-                      ({s.appName})
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-[10px] text-amber-800 dark:text-[#ffd233] font-bold">
+                      Step {step.order}
                     </span>
+                    <Badge variant="outline" className="text-[10px] border-border dark:border-[#2a2a36] text-muted-foreground dark:text-[#a1a1aa]">
+                      {step.type}
+                    </Badge>
                   </div>
-                  <Badge variant="secondary" className="text-[10px]">
-                    {s.type}
-                  </Badge>
+                  <h5 className="font-bold text-foreground dark:text-white truncate">{step.name}</h5>
+                  <p className="text-[11px] text-muted-foreground dark:text-[#71717a] truncate">
+                    {step.appName}
+                  </p>
                 </div>
               ))}
             </div>

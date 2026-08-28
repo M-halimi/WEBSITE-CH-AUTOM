@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { getAllPlatforms } from "@/lib/ensurePlatforms";
 import { WorkflowForm } from "@/components/admin/WorkflowForm";
 
 export const dynamic = "force-dynamic";
@@ -6,7 +7,7 @@ export const dynamic = "force-dynamic";
 export default async function NewWorkflowPage() {
   const [categories, platforms] = await Promise.all([
     prisma.category.findMany({ orderBy: { order: "asc" } }),
-    prisma.platform.findMany({ orderBy: { name: "asc" } }),
+    getAllPlatforms(),
   ]);
 
   return (

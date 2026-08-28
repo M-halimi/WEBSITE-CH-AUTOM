@@ -6,7 +6,7 @@ import { Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  const { theme, resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
@@ -15,18 +15,18 @@ export function ThemeToggle() {
 
   if (!mounted) {
     return (
-      <div className="h-9 w-9 rounded-full border border-border bg-transparent" />
+      <div className="h-9 w-9 rounded-full border border-border bg-card opacity-50 shrink-0" />
     );
   }
 
-  const isDark = theme === "dark";
+  const currentTheme = theme === "system" ? resolvedTheme : theme;
+  const isDark = currentTheme === "dark";
 
   return (
-    <Button
-      variant="ghost"
-      size="icon"
+    <button
+      type="button"
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      className="h-9 w-9 rounded-full border border-border hover:bg-muted text-foreground transition-transform active:scale-95 shadow-xs"
+      className="h-9 w-9 rounded-full border border-border bg-card hover:bg-muted text-foreground flex items-center justify-center transition-all active:scale-90 shadow-xs shrink-0"
       aria-label="Toggle dark and light mode"
       title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
     >
@@ -35,6 +35,6 @@ export function ThemeToggle() {
       ) : (
         <Moon className="h-4 w-4 text-foreground transition-all rotate-0 scale-100" />
       )}
-    </Button>
+    </button>
   );
 }

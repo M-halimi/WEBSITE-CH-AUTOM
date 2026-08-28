@@ -1,8 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { MessageSquare, Trash2, Loader2, Check } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { MessageSquare, Trash2, Loader2 } from "lucide-react";
 import { updateLeadStatus, deleteLeadRequest } from "@/actions/leadActions";
 
 interface LeadStatusSelectorProps {
@@ -54,7 +53,7 @@ export function LeadStatusSelector({
         disabled={pending}
         onChange={(e) => handleStatusChange(e.target.value)}
         aria-label={`Status for ${clientName}`}
-        className="h-8 rounded-lg border border-input bg-background px-2 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-primary"
+        className="h-8 rounded-xl border border-[#2a2a34] bg-[#1a1a22] px-2.5 text-xs font-bold text-white focus:outline-none focus:border-[#ff5a1f]"
       >
         <option value="NEW">🟡 NEW</option>
         <option value="CONTACTED">🔵 CONTACTED</option>
@@ -64,28 +63,27 @@ export function LeadStatusSelector({
       </select>
 
       {waDirectUrl && (
-        <a href={waDirectUrl} target="_blank" rel="noopener noreferrer">
-          <Button
-            variant="whatsapp"
-            size="icon"
-            className="h-8 w-8"
-            title="Message on WhatsApp"
-          >
-            <MessageSquare className="h-3.5 w-3.5" />
-          </Button>
+        <a
+          href={waDirectUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="h-8 px-3 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-400 font-bold text-xs inline-flex items-center gap-1.5 transition-colors shadow-xs"
+          title="Open WhatsApp Chat"
+        >
+          <MessageSquare className="h-3.5 w-3.5" />
+          <span>Chat</span>
         </a>
       )}
 
-      <Button
-        variant="ghost"
-        size="icon"
+      <button
+        type="button"
         disabled={pending}
         onClick={handleDelete}
-        className="h-8 w-8 text-destructive hover:bg-destructive/10"
+        className="h-8 w-8 rounded-xl bg-[#1c1c24] hover:bg-red-500/15 text-[#a1a1aa] hover:text-red-400 border border-[#2a2a34] inline-flex items-center justify-center transition-colors"
         title="Delete lead"
       >
         <Trash2 className="h-3.5 w-3.5" />
-      </Button>
+      </button>
     </div>
   );
 }

@@ -25,6 +25,7 @@ export interface WorkflowFormData {
   status: string; // DRAFT, PUBLISHED, ARCHIVED
   featured: boolean;
   price?: string;
+  imageUrl?: string | null;
   categoryId?: string;
   triggersDescription?: string;
   outcomesDescription?: string;
@@ -52,6 +53,7 @@ export async function createWorkflow(data: WorkflowFormData) {
         status: data.status || "DRAFT",
         featured: data.featured || false,
         price: data.price || "Free Template",
+        imageUrl: data.imageUrl || null,
         categoryId: data.categoryId || null,
         triggersDescription: data.triggersDescription,
         outcomesDescription: data.outcomesDescription,
@@ -123,6 +125,7 @@ export async function updateWorkflow(id: string, data: WorkflowFormData) {
         status: data.status,
         featured: data.featured,
         price: data.price,
+        imageUrl: data.imageUrl !== undefined ? data.imageUrl : undefined,
         categoryId: data.categoryId || null,
         triggersDescription: data.triggersDescription,
         outcomesDescription: data.outcomesDescription,
@@ -239,6 +242,43 @@ export async function parseN8nJson(jsonString: string) {
     };
   } catch (err: any) {
     return { success: false, error: "Invalid JSON format: " + err.message };
+  }
+}
+
+export async function createPlatform(name: string, color: string = "amber") {
+  try {
+    const trimmed = name.trim();
+    if (!trimmed) {
+      return { success: false, error: "Platform name cannot be empty." };
+    }
+    const slug = slugify(trimmed);
+
+    // Check if platform already exists
+    let existing = await prisma.platform.findFirst({
+      where: {
+        OR: [{ slug }, { name: { equals: trimmed } }],
+      },
+    });
+
+    if (existing) {
+      return { success: true, platform: existing };
+    }
+
+    const platform = await prisma.platform.create({
+      data: {
+        name: trimmed,
+        slug,
+        color,
+      },
+    });
+
+    revalidatePath("/admin/workflows/new");
+    revalidatePath("/admin/workflows");
+    revalidatePath("/workflows");
+
+    return { success: true, platform };
+  } catch (error: any) {
+    return { success: false, error: error.message || "Failed to create platform." };
   }
 }
 

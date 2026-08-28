@@ -85,27 +85,65 @@ async function main() {
 
   // 3. Create Platforms
   const platformsData = [
-    {
-      name: "WhatsApp Cloud API",
-      slug: "whatsapp",
-      icon: "MessageCircle",
-      color: "emerald",
-    },
+    // Messaging & Chat
+    { name: "WhatsApp Cloud API", slug: "whatsapp", icon: "MessageCircle", color: "emerald" },
+    { name: "Telegram", slug: "telegram", icon: "Send", color: "sky" },
+    { name: "Discord", slug: "discord", icon: "MessageSquare", color: "indigo" },
+    { name: "Slack", slug: "slack", icon: "Hash", color: "purple" },
+    { name: "Twilio SMS", slug: "twilio", icon: "Phone", color: "red" },
+    { name: "Gmail", slug: "gmail", icon: "Mail", color: "red" },
+    { name: "Microsoft Outlook", slug: "outlook", icon: "Mail", color: "blue" },
+    { name: "Resend", slug: "resend", icon: "Mail", color: "zinc" },
+    { name: "Mailchimp", slug: "mailchimp", icon: "Mail", color: "amber" },
+    { name: "Klaviyo", slug: "klaviyo", icon: "Mail", color: "green" },
+
+    // Automation & Workflow Engines
     { name: "n8n", slug: "n8n", icon: "Workflow", color: "orange" },
     { name: "Make.com", slug: "make", icon: "Zap", color: "purple" },
+    { name: "Zapier", slug: "zapier", icon: "Zap", color: "orange" },
+    { name: "Activepieces", slug: "activepieces", icon: "Zap", color: "pink" },
+    { name: "Pipedream", slug: "pipedream", icon: "Zap", color: "green" },
+    { name: "Microsoft Power Automate", slug: "power-automate", icon: "Workflow", color: "blue" },
+
+    // AI & LLM Models
     { name: "OpenAI / GPT-4o", slug: "openai", icon: "Cpu", color: "teal" },
-    {
-      name: "Google Sheets",
-      slug: "google-sheets",
-      icon: "Table",
-      color: "green",
-    },
+    { name: "Claude 3.5 (Anthropic)", slug: "claude", icon: "Cpu", color: "amber" },
+    { name: "Google Gemini", slug: "gemini", icon: "Cpu", color: "blue" },
+    { name: "DeepSeek AI", slug: "deepseek", icon: "Cpu", color: "sky" },
+    { name: "Mistral AI", slug: "mistral", icon: "Cpu", color: "orange" },
+    { name: "Perplexity AI", slug: "perplexity", icon: "Cpu", color: "teal" },
+    { name: "Groq", slug: "groq", icon: "Cpu", color: "orange" },
+
+    // E-Commerce & Payments
     { name: "Shopify", slug: "shopify", icon: "ShoppingBag", color: "lime" },
-    { name: "Notion", slug: "notion", icon: "FileText", color: "zinc" },
-    { name: "HubSpot", slug: "hubspot", icon: "Briefcase", color: "amber" },
+    { name: "WooCommerce", slug: "woocommerce", icon: "ShoppingBag", color: "purple" },
+    { name: "YouCan", slug: "youcan", icon: "ShoppingBag", color: "blue" },
     { name: "Stripe", slug: "stripe", icon: "CreditCard", color: "indigo" },
-    { name: "Telegram", slug: "telegram", icon: "Send", color: "sky" },
+    { name: "PayPal", slug: "paypal", icon: "CreditCard", color: "blue" },
+    { name: "TikTok Shop", slug: "tiktok-shop", icon: "ShoppingBag", color: "pink" },
+
+    // Databases & Workspace
+    { name: "Google Sheets", slug: "google-sheets", icon: "Table", color: "green" },
+    { name: "Notion", slug: "notion", icon: "FileText", color: "zinc" },
+    { name: "Airtable", slug: "airtable", icon: "Grid", color: "yellow" },
+    { name: "Supabase", slug: "supabase", icon: "Database", color: "emerald" },
+    { name: "PostgreSQL", slug: "postgresql", icon: "Database", color: "blue" },
+    { name: "MySQL", slug: "mysql", icon: "Database", color: "blue" },
+    { name: "MongoDB", slug: "mongodb", icon: "Database", color: "green" },
+    { name: "Google Drive", slug: "google-drive", icon: "Folder", color: "yellow" },
+
+    // CRM & Advertising
     { name: "Meta Lead Ads", slug: "meta-ads", icon: "Target", color: "blue" },
+    { name: "TikTok Ads", slug: "tiktok-ads", icon: "Target", color: "pink" },
+    { name: "Google Ads", slug: "google-ads", icon: "Target", color: "yellow" },
+    { name: "LinkedIn Ads", slug: "linkedin-ads", icon: "Target", color: "blue" },
+    { name: "HubSpot", slug: "hubspot", icon: "Briefcase", color: "amber" },
+    { name: "Salesforce", slug: "salesforce", icon: "Cloud", color: "blue" },
+    { name: "Zoho CRM", slug: "zoho", icon: "Briefcase", color: "red" },
+
+    // Developer & Webhooks
+    { name: "GitHub", slug: "github", icon: "Code", color: "zinc" },
+    { name: "Webhooks & REST API", slug: "webhooks", icon: "Radio", color: "amber" },
   ];
 
   const platforms = {};
@@ -163,6 +201,7 @@ async function main() {
       views: 342,
       featured: true,
       price: "Free Template",
+      imageUrl: "https://images.unsplash.com/photo-1611746872915-64382b5c76da?w=800&auto=format&fit=crop&q=80",
       categorySlug: "whatsapp-messaging",
       platformSlugs: ["whatsapp", "openai", "google-sheets", "n8n", "notion"],
       tagSlugs: ["lead-capture", "instant-reply", "ai-agent", "crm-sync"],
@@ -242,7 +281,8 @@ async function main() {
       status: "PUBLISHED",
       views: 521,
       featured: true,
-      price: "Free Template",
+      price: "1,500 MAD",
+      imageUrl: "https://images.unsplash.com/photo-1556742049-0a67e55722c0?w=800&auto=format&fit=crop&q=80",
       categorySlug: "ecommerce-orders",
       platformSlugs: ["shopify", "whatsapp", "make"],
       tagSlugs: ["e-commerce", "instant-reply", "cost-saver"],
@@ -311,7 +351,8 @@ async function main() {
       status: "PUBLISHED",
       views: 289,
       featured: true,
-      price: "Free Template",
+      price: "2,500 MAD",
+      imageUrl: "https://images.unsplash.com/photo-1677442136019-21780efad99a?w=800&auto=format&fit=crop&q=80",
       categorySlug: "ai-smart-agents",
       platformSlugs: ["openai", "notion", "hubspot", "n8n"],
       tagSlugs: ["ai-agent", "crm-sync", "instant-reply"],
@@ -392,6 +433,7 @@ async function main() {
       views: 412,
       featured: false,
       price: "Free Template",
+      imageUrl: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=800&auto=format&fit=crop&q=80",
       categorySlug: "finance-invoicing",
       platformSlugs: ["stripe", "whatsapp", "google-sheets", "make"],
       tagSlugs: ["pdf-generation", "e-commerce", "cost-saver"],
@@ -462,7 +504,8 @@ async function main() {
       status: "PUBLISHED",
       views: 619,
       featured: true,
-      price: "Free Template",
+      price: "3,000 MAD",
+      imageUrl: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&auto=format&fit=crop&q=80",
       categorySlug: "crm-lead-generation",
       platformSlugs: ["meta-ads", "whatsapp", "google-sheets", "n8n"],
       tagSlugs: ["lead-capture", "instant-reply", "crm-sync"],
@@ -534,7 +577,8 @@ async function main() {
       status: "PUBLISHED",
       views: 198,
       featured: false,
-      price: "Free Template",
+      price: "1,800 MAD",
+      imageUrl: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80",
       categorySlug: "marketing-social-media",
       platformSlugs: ["openai", "notion", "n8n"],
       tagSlugs: ["ai-agent", "cost-saver"],

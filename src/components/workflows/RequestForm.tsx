@@ -57,7 +57,6 @@ export function RequestForm() {
 
   if (submitted) {
     return (
-<<<<<<< HEAD
       <div className="text-center py-8 space-y-5">
         <div className="mx-auto h-16 w-16 rounded-full bg-amber-100 dark:bg-amber-950/50 text-amber-700 dark:text-[#ffd233] flex items-center justify-center border border-amber-300">
           <CheckCircle2 className="h-8 w-8" />
@@ -66,26 +65,12 @@ export function RequestForm() {
           <h3 className="text-xl font-bold text-foreground">Brief Registered & Opening WhatsApp! 🚀</h3>
           <p className="text-xs text-muted-foreground mt-1.5 max-w-md mx-auto leading-relaxed">
             Your project details have been logged in our CRM and forwarded to WhatsApp so our engineer can respond immediately.
-=======
-      <div className="text-center py-10 space-y-5">
-        <div className="mx-auto h-16 w-16 rounded-full bg-[#e8f5e9] text-[#258635] flex items-center justify-center">
-          <CheckCircle2 className="h-9 w-9" />
-        </div>
-        <div>
-          <h3 className="text-2xl font-bold text-[#222222]">Brief Saved & Opening WhatsApp! 🚀</h3>
-          <p className="text-sm text-[#595959] mt-2 max-w-md mx-auto leading-relaxed">
-            Your project details have been logged in our database and forwarded to WhatsApp so our team can answer immediately.
->>>>>>> 7ee9ca6f04322930ec29228c493ddb72ee250ce5
           </p>
         </div>
         <div className="pt-2">
           {directWaLink && (
             <a href={directWaLink} target="_blank" rel="noopener noreferrer">
-<<<<<<< HEAD
               <Button variant="default" size="lg" className="gap-2 font-bold rounded-full bg-[#ffd233] text-black">
-=======
-              <Button variant="default" size="lg" className="gap-2 font-semibold rounded-full">
->>>>>>> 7ee9ca6f04322930ec29228c493ddb72ee250ce5
                 <MessageSquare className="h-4 w-4" />
                 Click here if WhatsApp didn&apos;t open automatically
               </Button>
@@ -99,18 +84,13 @@ export function RequestForm() {
   return (
     <form onSubmit={handleSubmit} method="POST" className="space-y-4">
       {errorMessage && (
-<<<<<<< HEAD
         <div className="p-3.5 rounded-2xl bg-destructive/10 border border-destructive/30 text-destructive text-xs font-medium">
-=======
-        <div className="p-3 rounded-[8px] bg-[#ffebee] border border-[#b3261e] text-[#b3261e] text-xs font-medium">
->>>>>>> 7ee9ca6f04322930ec29228c493ddb72ee250ce5
           {errorMessage}
         </div>
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-<<<<<<< HEAD
           <label className="text-xs font-semibold text-foreground block mb-1">
             Your Full Name *
           </label>
@@ -121,24 +101,11 @@ export function RequestForm() {
             Email Address *
           </label>
           <Input required type="email" name="email" placeholder="mohamed@company.ma" />
-=======
-          <label className="text-xs font-semibold text-[#222222] block mb-1">
-            Your Full Name *
-          </label>
-          <Input required name="name" placeholder="Mohamed Alami" className="h-11" />
-        </div>
-        <div>
-          <label className="text-xs font-semibold text-[#222222] block mb-1">
-            Email Address *
-          </label>
-          <Input required type="email" name="email" placeholder="mohamed@company.ma" className="h-11" />
->>>>>>> 7ee9ca6f04322930ec29228c493ddb72ee250ce5
         </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-<<<<<<< HEAD
           <label className="text-xs font-semibold text-foreground block mb-1">
             WhatsApp Phone Number *
           </label>
@@ -149,27 +116,11 @@ export function RequestForm() {
             Company / Brand Name
           </label>
           <Input name="company" placeholder="e.g. Atlas Commerce" />
-=======
-          <label className="text-xs font-semibold text-[#222222] block mb-1">
-            WhatsApp Phone Number *
-          </label>
-          <Input required type="tel" name="whatsapp" placeholder="+212 6..." className="h-11" />
-        </div>
-        <div>
-          <label className="text-xs font-semibold text-[#222222] block mb-1">
-            Company / Brand Name
-          </label>
-          <Input name="company" placeholder="e.g. Atlas Commerce" className="h-11" />
->>>>>>> 7ee9ca6f04322930ec29228c493ddb72ee250ce5
         </div>
       </div>
 
       <div>
-<<<<<<< HEAD
         <label className="text-xs font-semibold text-foreground block mb-1">
-=======
-        <label className="text-xs font-semibold text-[#222222] block mb-1">
->>>>>>> 7ee9ca6f04322930ec29228c493ddb72ee250ce5
           Describe Your Automation Requirement *
         </label>
         <Textarea
@@ -177,11 +128,7 @@ export function RequestForm() {
           name="message"
           rows={4}
           placeholder="e.g. We want to automatically send WhatsApp PDF invoices whenever a Shopify order is paid, and sync the customer info to Google Sheets."
-<<<<<<< HEAD
           className="text-xs leading-relaxed"
-=======
-          className="text-sm leading-relaxed"
->>>>>>> 7ee9ca6f04322930ec29228c493ddb72ee250ce5
         />
       </div>
 
@@ -190,11 +137,7 @@ export function RequestForm() {
           type="submit"
           disabled={pending}
           size="lg"
-<<<<<<< HEAD
           className="w-full font-bold bg-[#ffd233] hover:bg-[#f5c71a] text-black text-xs sm:text-sm h-12 gap-2 rounded-full shadow-xs"
-=======
-          className="w-full font-semibold bg-[#f1641e] hover:bg-[#d44e0d] text-white text-sm h-12 gap-2 rounded-full shadow-sm"
->>>>>>> 7ee9ca6f04322930ec29228c493ddb72ee250ce5
         >
           {pending ? (
             <>
@@ -210,11 +153,7 @@ export function RequestForm() {
         </Button>
       </div>
 
-<<<<<<< HEAD
       <p className="text-[11px] text-muted-foreground text-center flex items-center justify-center gap-1 pt-1">
-=======
-      <p className="text-[11px] text-[#757575] text-center flex items-center justify-center gap-1">
->>>>>>> 7ee9ca6f04322930ec29228c493ddb72ee250ce5
         <Lock className="h-3 w-3" />
         Direct WhatsApp transmission to our lead engineering team.
       </p>
