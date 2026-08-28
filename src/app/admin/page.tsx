@@ -28,7 +28,6 @@ import { prisma } from "@/lib/prisma";
 import { formatDate } from "@/lib/utils";
 import { PlatformIcon } from "@/components/ui/platform-icon";
 import { ActivityChart } from "@/components/admin/ActivityChart";
-import { VirtualBusinessCard } from "@/components/admin/VirtualBusinessCard";
 
 export const dynamic = "force-dynamic";
 
@@ -261,7 +260,6 @@ export default async function AdminDashboardPage() {
         </div>
 
         {/* Right Sidebar Panel (4 of 12) - Sleek Virtual Card & Quota Status */}
-        {/* Right Sidebar Panel (4 of 12) - Interactive Virtual Business Card & Quotas */}
         <div className="lg:col-span-4 space-y-6">
           
           {/* Top Search / Filter Widget */}
@@ -275,8 +273,6 @@ export default async function AdminDashboardPage() {
                   Sandbox
                 </button>
               </div>
-          {/* Interactive 3D Business Card */}
-          <VirtualBusinessCard />
 
               <Link
                 href="/admin/workflows/new"
