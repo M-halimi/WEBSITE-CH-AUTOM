@@ -8,14 +8,203 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(cuid())
-  email        String   @unique
-  name         String?
-  passwordHash String
-  role         String   @default("ADMIN") // ADMIN, USER
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id                String                   @id @default(cuid())
+  email             String                   @unique
+  name              String?
+  passwordHash      String
+  role              String                   @default("CLIENT") // ADMIN, CLIENT
+  phone             String?
+  company           String?
+  country           String?                  @default("Morocco")
+  businessType      String?                  // E-commerce, Agency, Local Business, SaaS, Services, Other
+  emailVerified     Boolean                  @default(false)
+  verificationToken String?
+  resetToken        String?
+  resetTokenExpiry  DateTime?
+  
+  // Relations
+  clientProfile     ClientProfile?
+  subscriptions     Subscription[]
+  workflowRequests  ClientWorkflowRequest[]
+  sentMessages      ClientWorkflowMessage[]
+  activities        ClientWorkflowActivity[]
+
+  createdAt         DateTime                 @default(now())
+  updatedAt         DateTime                 @updatedAt
 }
+
+model ClientProfile {
+  id                     String   @id @default(cuid())
+  userId                 String   @unique
+  user                   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  businessName           String?
+  businessType           String?
+  industry               String?
+  customerContactMethods String?  // JSON string or comma-separated: WhatsApp, Instagram, Website, etc.
+  website                String?
+  onboardingCompleted    Boolean  @default(false)
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+}
+
+model Plan {
+  id             String         @id @default(cuid())
+  name           String         @unique // STARTER, BUSINESS, PRO
+  slug           String         @unique
+  tagline        String?
+  price          Float          @default(49)
+  currency       String         @default("USD") // USD, MAD, EUR
+  billingPeriod  String         @default("MONTHLY") // MONTHLY, YEARLY
+  features       String         // JSON array string of features
+  workflowLimit  Int            @default(1) // 1 for Starter, 5 for Business, 999 for Pro (unlimited)
+  supportLevel   String         @default("Basic Consultation")
+  isPopular      Boolean        @default(false)
+  active         Boolean        @default(true)
+  subscriptions  Subscription[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model Subscription {
+  id                     String                  @id @default(cuid())
+  userId                 String
+  user                   User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  planId                 String
+  plan                   Plan                    @relation(fields: [planId], references: [id], onDelete: Restrict)
+  status                 String                  @default("ACTIVE") // ACTIVE, PAST_DUE, CANCELED, TRIALING
+  billingPeriod          String                  @default("MONTHLY") // MONTHLY, YEARLY
+  currentPeriodStart     DateTime                @default(now())
+  currentPeriodEnd       DateTime
+  cancelAtPeriodEnd      Boolean                 @default(false)
+  provider               String                  @default("MANUAL") // MANUAL, STRIPE, PAYPAL, CMI
+  providerSubscriptionId String?
+  usedWorkflowsCount     Int                     @default(0)
+  workflowRequests       ClientWorkflowRequest[]
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
+}
+
+model ClientWorkflowRequest {
+  id                    String                       @id @default(cuid())
+  userId                String
+  user                  User                         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subscriptionId        String?
+  subscription          Subscription?                @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+  
+  // Step 1: Business Overview
+  title                 String                       // e.g. "WhatsApp Order Qualifier & CRM Sync"
+  businessName          String?
+  businessType          String?
+  industry              String?
+  businessDescription   String?                      // "What your business does..."
+  targetCustomers       String?                      // "Who are your customers..."
+  customerChannels      String?                      // "WhatsApp, Instagram, Website..."
+  
+  // Step 2: Problem Definition
+  problemDescription    String?                      // "What is currently difficult, slow, repetitive..."
+  frequency             String?                      // "Several times a day", "Daily", etc.
+  estimatedTime         String?                      // "2 hours daily"
+  costOfFailure         String?                      // "What happens if done wrong..."
+  priority              String                       @default("MEDIUM") // LOW, MEDIUM, HIGH, CRITICAL
+  
+  // Step 4 & 7: Desired Result & Goals
+  desiredAutomationDesc String?                      // "What should happen automatically..."
+  expectedResult        String?                      // "What should the final result look like..."
+  successCriteria       String?                      // "What would make you say: Yes, this works perfectly..."
+  expectedDeadline      String?
+  budgetRange           String?
+  additionalNotes       String?
+  
+  // Workflow Lifecycle Status
+  status                String                       @default("PENDING_REVIEW") 
+  // DRAFT, PENDING_REVIEW, REVIEWING, NEEDS_INFORMATION, APPROVED, IN_PROGRESS, TESTING, COMPLETED, REJECTED, CANCELLED
+  progress              Int                          @default(10) // 0 to 100
+  
+  // Team / Developer Assignment & Estimates
+  assignedToId          String?
+  assignedToName        String?
+  estimatedComplexity   String?                      // Low, Medium, High, Multi-Agent
+  estimatedPrice        String?
+  estimatedDeliveryTime String?                      // e.g. "48 hours", "3 days"
+  internalNotes         String?                      // Private team notes
+  
+  // Relations
+  steps                 ClientWorkflowStep[]
+  integrations          ClientWorkflowIntegration[]
+  files                 ClientWorkflowFile[]
+  messages              ClientWorkflowMessage[]
+  activities            ClientWorkflowActivity[]
+  
+  createdAt             DateTime                     @default(now())
+  updatedAt             DateTime                     @updatedAt
+}
+
+model ClientWorkflowStep {
+  id                String                @id @default(cuid())
+  requestId         String
+  request           ClientWorkflowRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  phase             String                @default("CURRENT") // CURRENT, DESIRED
+  order             Int                   @default(1)
+  title             String                // e.g. "Customer sends WhatsApp message"
+  description       String?
+  tool              String?               // e.g. "WhatsApp", "Excel", "Shopify"
+  responsiblePerson String?               // e.g. "Support Rep", "Me", "Automation Engine"
+  expectedResult    String?
+  createdAt         DateTime              @default(now())
+}
+
+model ClientWorkflowIntegration {
+  id           String                @id @default(cuid())
+  requestId    String
+  request      ClientWorkflowRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  toolName     String                // e.g. "WhatsApp Business", "Google Sheets", "Shopify"
+  toolCategory String?               // Messaging, E-commerce, Spreadsheet, CRM, Payment
+  purpose      String?               // "What do you currently use this tool for?"
+  websiteUrl   String?
+  accountInfo  String?               // Non-sensitive info / account tier
+  hasApi       Boolean               @default(true)
+  createdAt    DateTime              @default(now())
+}
+
+model ClientWorkflowFile {
+  id         String                @id @default(cuid())
+  requestId  String
+  request    ClientWorkflowRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  fileName   String
+  fileUrl    String                // Base64 data URL or uploaded file path
+  fileType   String                // image/png, application/pdf, text/csv, etc.
+  fileSize   Int                   @default(0) // bytes
+  uploadedAt DateTime              @default(now())
+}
+
+model ClientWorkflowMessage {
+  id         String                @id @default(cuid())
+  requestId  String
+  request    ClientWorkflowRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  senderId   String?
+  senderRole String                @default("CLIENT") // CLIENT, TEAM
+  senderName String
+  message    String
+  isInternal Boolean               @default(false) // If true, only visible to team/admin
+  createdAt  DateTime              @default(now())
+}
+
+model ClientWorkflowActivity {
+  id          String                @id @default(cuid())
+  requestId   String
+  request     ClientWorkflowRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  actorId     String?
+  actorName   String?
+  actorRole   String                @default("SYSTEM") // CLIENT, TEAM, SYSTEM
+  type        String                @default("STATUS_CHANGE") 
+  // CREATED, STATUS_CHANGE, PROGRESS_UPDATE, ASSIGNED, MESSAGE_SENT, ESTIMATE_SET, FILE_UPLOADED
+  description String
+  createdAt   DateTime              @default(now())
+}
+
+// ----------------------------------------------------
+// Existing Marketplace & Catalog Models
+// ----------------------------------------------------
 
 model Category {
   id          String     @id @default(cuid())
@@ -144,4 +333,3 @@ model SiteSetting {
   footerCopyright  String   @default("© 2026 AutoFlows Hub Inc. All rights reserved.")
   updatedAt        DateTime @updatedAt
 }
-

@@ -14,8 +14,15 @@ import { generateWhatsAppLink } from "@/lib/whatsapp";
 export function LeftDock() {
   const pathname = usePathname();
 
-  // Hide the floating dock on admin routes since admin layout has its own full sidebar
-  if (pathname?.startsWith("/admin")) {
+  // Hide the floating dock on admin/dashboard and auth routes
+  if (
+    pathname?.startsWith("/admin") ||
+    pathname?.startsWith("/dashboard") ||
+    pathname?.startsWith("/login") ||
+    pathname?.startsWith("/register") ||
+    pathname?.startsWith("/forgot-password") ||
+    pathname?.startsWith("/reset-password")
+  ) {
     return null;
   }
 

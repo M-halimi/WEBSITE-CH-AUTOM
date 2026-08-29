@@ -11,7 +11,9 @@ import {
   X, 
   Layers, 
   Sparkles, 
-  ArrowRight
+  ArrowRight,
+  User,
+  CreditCard
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
@@ -34,8 +36,15 @@ export function Navbar() {
 
   const waLink = generateWhatsAppLink({});
 
-  // Hide public navbar on admin dashboard and login pages
-  if (pathname?.startsWith("/admin") || pathname?.startsWith("/login")) {
+  // Hide public navbar on portal dashboards & auth screens
+  if (
+    pathname?.startsWith("/admin") ||
+    pathname?.startsWith("/dashboard") ||
+    pathname?.startsWith("/login") ||
+    pathname?.startsWith("/register") ||
+    pathname?.startsWith("/forgot-password") ||
+    pathname?.startsWith("/reset-password")
+  ) {
     return null;
   }
 
@@ -68,6 +77,16 @@ export function Navbar() {
                 Blueprints Catalog
               </Link>
               <Link
+                href="/pricing"
+                className={`px-4 py-2 rounded-full transition-colors ${
+                  pathname === "/pricing"
+                    ? "bg-card border border-border text-foreground shadow-xs"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                Subscription Plans
+              </Link>
+              <Link
                 href="/request"
                 className={`px-4 py-2 rounded-full transition-colors ${
                   pathname === "/request"
@@ -90,18 +109,18 @@ export function Navbar() {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search workflows by keyword..."
-                  className="w-48 md:w-60 h-9 pl-9 pr-3 text-xs rounded-full border border-border bg-card text-foreground focus:outline-none focus:border-[#ffd233] transition-all"
+                  placeholder="Search workflows..."
+                  className="w-44 md:w-56 h-9 pl-9 pr-3 text-xs rounded-full border border-border bg-card text-foreground focus:outline-none focus:border-[#ffd233] transition-all"
                 />
               </div>
             </form>
 
             <Link
-              href="/request"
-              className="hidden sm:inline-flex items-center justify-center h-9 px-4 text-xs font-bold rounded-full gap-1.5 border border-border bg-card hover:bg-muted text-foreground transition-colors shadow-xs"
+              href="/dashboard"
+              className="hidden sm:inline-flex items-center justify-center h-9 px-3.5 text-xs font-bold rounded-full gap-1.5 border border-border bg-card hover:bg-muted text-foreground transition-colors shadow-xs"
             >
-              <Sparkles className="h-3.5 w-3.5 text-amber-600 dark:text-[#ffd233]" />
-              <span>Custom Build</span>
+              <User className="h-3.5 w-3.5 text-amber-600 dark:text-[#ffd233]" />
+              <span>Client Portal</span>
             </Link>
 
             {/* Dark & Light Mode Switcher */}
@@ -155,6 +174,28 @@ export function Navbar() {
               <span className="flex items-center gap-2">
                 <Layers className="h-4 w-4 text-amber-500" />
                 Browse All Blueprints
+              </span>
+              <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
+            </Link>
+            <Link
+              href="/pricing"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-between px-4 py-2.5 rounded-full text-xs font-bold text-foreground hover:bg-muted"
+            >
+              <span className="flex items-center gap-2">
+                <CreditCard className="h-4 w-4 text-amber-500" />
+                Subscription Plans
+              </span>
+              <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
+            </Link>
+            <Link
+              href="/dashboard"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-between px-4 py-2.5 rounded-full text-xs font-bold text-foreground hover:bg-muted"
+            >
+              <span className="flex items-center gap-2">
+                <User className="h-4 w-4 text-amber-500" />
+                Client Dashboard
               </span>
               <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
             </Link>

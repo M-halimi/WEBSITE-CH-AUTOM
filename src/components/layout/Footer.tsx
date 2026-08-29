@@ -16,8 +16,15 @@ export function Footer({ initialSettings = DEFAULT_SETTINGS }: FooterProps) {
   const settings = initialSettings;
   const waLink = generateWhatsAppLink({ whatsappNumber: settings.whatsappNumber });
 
-  // 100% Hide public website footer on all admin pages and login
-  if (pathname?.startsWith("/admin") || pathname?.startsWith("/login")) {
+  // 100% Hide public website footer on all admin/dashboard pages and auth routes
+  if (
+    pathname?.startsWith("/admin") ||
+    pathname?.startsWith("/dashboard") ||
+    pathname?.startsWith("/login") ||
+    pathname?.startsWith("/register") ||
+    pathname?.startsWith("/forgot-password") ||
+    pathname?.startsWith("/reset-password")
+  ) {
     return null;
   }
 

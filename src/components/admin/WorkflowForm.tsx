@@ -30,9 +30,8 @@ import {
   createWorkflow,
   updateWorkflow,
   createPlatform,
-  StepInput,
-  WorkflowFormData,
 } from "@/actions/workflowActions";
+import { StepInput, WorkflowFormData } from "@/types/workflow";
 import { slugify, isValidImageUrl } from "@/lib/utils";
 
 interface WorkflowFormProps {

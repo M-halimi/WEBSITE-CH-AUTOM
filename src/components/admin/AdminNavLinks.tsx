@@ -67,6 +67,24 @@ export function AdminNavLinks() {
             <span>Create Blueprint</span>
           </Link>
 
+          {/* Client Workflow Requests CRM */}
+          <Link
+            href="/admin/client-requests"
+            className={`flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-all ${
+              pathname?.startsWith("/admin/client-requests")
+                ? "bg-[#ffd233]/20 text-amber-900 dark:text-[#ffd233] border-l-2 border-[#ffd233] font-bold shadow-xs"
+                : "text-muted-foreground hover:text-foreground dark:text-[#a1a1aa] dark:hover:text-white hover:bg-muted dark:hover:bg-[#18181d]"
+            }`}
+          >
+            <Zap className={`h-4 w-4 ${pathname?.startsWith("/admin/client-requests") ? "text-amber-600 dark:text-[#ffd233]" : "text-muted-foreground dark:text-[#71717a]"}`} />
+            <div className="flex items-center justify-between w-full">
+              <span>Client Requests</span>
+              <span className="px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-[#ffd233] text-black">
+                CRM
+              </span>
+            </div>
+          </Link>
+
           {/* Leads */}
           <Link
             href="/admin/requests"
@@ -77,7 +95,7 @@ export function AdminNavLinks() {
             }`}
           >
             <Users className={`h-4 w-4 ${pathname === "/admin/requests" ? "text-amber-600 dark:text-[#ffd233]" : "text-muted-foreground dark:text-[#71717a]"}`} />
-            <span>Client Leads</span>
+            <span>Public Leads</span>
           </Link>
 
           {/* Import n8n */}

@@ -1,5 +1,6 @@
 import { Metadata } from "next";
-import { Sparkles, MessageSquare, ShieldCheck, Zap, Clock, ShoppingBag } from "lucide-react";
+import Link from "next/link";
+import { Sparkles, MessageSquare, ShieldCheck, Zap, Clock, ShoppingBag, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { generateWhatsAppLink } from "@/lib/whatsapp";
 import { RequestForm } from "@/components/workflows/RequestForm";
@@ -16,7 +17,33 @@ export default function CustomRequestPage() {
 
   return (
     <div className="bg-background text-foreground min-h-screen transition-colors duration-300">
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-10 md:py-14">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-10 md:py-14 space-y-8">
+        
+        {/* Top Workspace Client Banner */}
+        <div className="p-4 sm:p-5 rounded-3xl bg-muted/40 dark:bg-[#141418] border border-border dark:border-[#22222a] flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xs">
+          <div className="flex items-center gap-3 text-center sm:text-left">
+            <div className="h-10 w-10 rounded-2xl bg-[#ffd233] text-black flex items-center justify-center font-black text-sm shrink-0 shadow-xs">
+              ✦
+            </div>
+            <div>
+              <h3 className="text-xs sm:text-sm font-bold text-foreground dark:text-white">
+                Have an AutoFlows Workspace Account?
+              </h3>
+              <p className="text-[11px] sm:text-xs text-muted-foreground">
+                Use our conversational 8-step wizard with visual flowchart builder and draft autosave.
+              </p>
+            </div>
+          </div>
+
+          <Link
+            href="/dashboard/workflows/new"
+            className="h-10 px-5 rounded-2xl bg-[#ffd233] hover:bg-[#f5c71a] text-black font-extrabold text-xs inline-flex items-center gap-1.5 shadow-xs transition-all shrink-0"
+          >
+            <span>Open Client Request Wizard</span>
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           {/* Left Col: Benefits */}
           <div className="lg:col-span-5 space-y-6">

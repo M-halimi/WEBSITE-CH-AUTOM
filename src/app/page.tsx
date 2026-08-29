@@ -71,18 +71,24 @@ export default async function HomePage() {
             </p>
 
             {/* Action Buttons */}
-            <div className="flex items-center gap-4 pt-2">
-              <a
-                href={waLink}
-                target="_blank"
-                rel="noopener noreferrer"
+            <div className="flex items-center gap-3 pt-2 flex-wrap">
+              <Link
+                href="/pricing"
+                className="h-11 px-6 rounded-full inline-flex items-center justify-center bg-[#ffd233] text-black font-extrabold text-xs gap-2 shadow-sm hover:bg-[#f5c71a] transition-all"
+              >
+                <Zap className="h-3.5 w-3.5 fill-current" />
+                <span>View Subscription Plans</span>
+              </Link>
+
+              <Link
+                href="/dashboard/workflows/new"
                 className="h-11 px-6 rounded-full inline-flex items-center justify-center bg-black text-white dark:bg-white dark:text-black font-semibold text-xs gap-2 shadow-sm hover:opacity-90 transition-all"
               >
-                <Play className="h-3.5 w-3.5 fill-current" />
-                <span>Play Demo & Tour</span>
-              </a>
+                <Sparkles className="h-3.5 w-3.5" />
+                <span>+ Request Workflow</span>
+              </Link>
 
-              <Link href="/workflows" className="text-xs font-semibold text-foreground hover:underline px-3 py-2">
+              <Link href="/workflows" className="text-xs font-semibold text-foreground hover:underline px-2 py-2">
                 Explore Catalog
               </Link>
             </div>
