@@ -141,9 +141,7 @@ export function DashboardNavLinks() {
           </Link>
 
           <a
-            href="https://wa.me/212600000000"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/contact"
             className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-muted-foreground hover:text-foreground dark:text-[#a1a1aa] dark:hover:text-white hover:bg-muted dark:hover:bg-[#18181d] transition-all font-medium"
           >
             <MessageSquare className="h-4 w-4 text-emerald-500" />
@@ -154,4 +152,3 @@ export function DashboardNavLinks() {
     </div>
   );
 }
-

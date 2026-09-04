@@ -88,44 +88,6 @@ export async function getAllPlans(): Promise<PlanData[]> {
         orderBy: { price: "asc" },
       });
 
-      if (!plans || plans.length < DEFAULT_PLANS.length) {
-        for (const p of DEFAULT_PLANS) {
-          await (prisma as any).plan.upsert({
-            where: { slug: p.slug },
-            update: {
-              name: p.name,
-              tagline: p.tagline,
-              price: p.price,
-              currency: p.currency,
-              billingPeriod: p.billingPeriod,
-              features: JSON.stringify(p.features),
-              workflowLimit: p.workflowLimit,
-              supportLevel: p.supportLevel,
-              isPopular: p.isPopular,
-              active: true,
-            },
-            create: {
-              name: p.name,
-              slug: p.slug,
-              tagline: p.tagline,
-              price: p.price,
-              currency: p.currency,
-              billingPeriod: p.billingPeriod,
-              features: JSON.stringify(p.features),
-              workflowLimit: p.workflowLimit,
-              supportLevel: p.supportLevel,
-              isPopular: p.isPopular,
-              active: true,
-            },
-          });
-        }
-
-        plans = await (prisma as any).plan.findMany({
-          where: { active: true },
-          orderBy: { price: "asc" },
-        });
-      }
-
       if (plans && plans.length > 0) {
         return plans.map((p: any) => ({
           ...p,
@@ -139,4 +101,3 @@ export async function getAllPlans(): Promise<PlanData[]> {
 
   return DEFAULT_PLANS;
 }
-

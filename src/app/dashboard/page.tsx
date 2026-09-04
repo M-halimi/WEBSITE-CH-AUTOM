@@ -292,9 +292,7 @@ export default async function ClientDashboardPage() {
               Have questions about an API or custom workflow? Our certified engineers are available on WhatsApp for instant guidance.
             </p>
             <a
-              href="https://wa.me/212600000000?text=Salam%20AutoFlows%20Team%2C%20I%20need%20assistance%20with%20my%20workflow%20request"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="/contact"
               className="w-full h-9 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-xs"
             >
               <MessageSquare className="h-3.5 w-3.5" />
@@ -306,4 +304,3 @@ export default async function ClientDashboardPage() {
     </div>
   );
 }
-

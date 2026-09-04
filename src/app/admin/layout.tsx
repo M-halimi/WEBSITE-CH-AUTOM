@@ -25,6 +25,8 @@ import {
 import { verifyAdminSession, adminLogout } from "@/actions/authActions";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { AdminNavLinks } from "@/components/admin/AdminNavLinks";
+import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
+import { getTranslator } from "@/i18n/server";
 
 export default async function AdminLayout({
   children,
@@ -32,6 +34,7 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }) {
   const isAuthenticated = await verifyAdminSession();
+  const { t } = getTranslator();
 
   if (!isAuthenticated) {
     redirect("/login");
@@ -54,13 +57,14 @@ export default async function AdminLayout({
             </div>
           </Link>
           <div className="flex items-center gap-2">
+            <LanguageSwitcher compact />
             <ThemeToggle />
             <form action={adminLogout}>
               <button
                 type="submit"
-                aria-label="Sign Out"
+                aria-label={t("admin.logout")}
                 className="p-1.5 text-xs text-red-500 hover:bg-red-500/10 rounded-xl"
-                title="Sign out"
+                title={t("admin.logout")}
               >
                 <LogOut className="h-4 w-4" />
               </button>
@@ -75,14 +79,14 @@ export default async function AdminLayout({
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-card dark:bg-[#1d1d23] text-foreground dark:text-white font-semibold shrink-0 text-xs border border-border dark:border-[#2a2a32]"
           >
             <LayoutDashboard className="h-3.5 w-3.5 text-[#ffd233]" />
-            <span>Dashboard</span>
+            <span>{t("admin.dashboard")}</span>
           </Link>
           <Link
             href="/admin/workflows"
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-card dark:bg-[#1d1d23] text-muted-foreground dark:text-[#a1a1aa] font-semibold shrink-0 text-xs border border-border dark:border-[#2a2a32]"
           >
             <Layers className="h-3.5 w-3.5 text-[#ffd233]" />
-            <span>Blueprints</span>
+            <span>{t("admin.blueprints")}</span>
           </Link>
           <Link
             href="/admin/workflows/new"
@@ -96,21 +100,21 @@ export default async function AdminLayout({
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-card dark:bg-[#1d1d23] text-muted-foreground dark:text-[#a1a1aa] font-semibold shrink-0 text-xs border border-border dark:border-[#2a2a32]"
           >
             <UploadCloud className="h-3.5 w-3.5 text-[#ffd233]" />
-            <span>Import</span>
+            <span>{t("admin.import")}</span>
           </Link>
           <Link
             href="/admin/requests"
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-card dark:bg-[#1d1d23] text-muted-foreground dark:text-[#a1a1aa] font-semibold shrink-0 text-xs border border-border dark:border-[#2a2a32]"
           >
             <Users className="h-3.5 w-3.5 text-[#ffd233]" />
-            <span>Leads</span>
+            <span>{t("admin.publicLeads")}</span>
           </Link>
           <Link
             href="/admin/settings"
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-card dark:bg-[#1d1d23] text-muted-foreground dark:text-[#a1a1aa] font-semibold shrink-0 text-xs border border-border dark:border-[#2a2a32]"
           >
             <SlidersHorizontal className="h-3.5 w-3.5 text-[#ffd233]" />
-            <span>Customizer</span>
+            <span>{t("admin.customizer")}</span>
           </Link>
         </nav>
       </header>
@@ -184,7 +188,7 @@ export default async function AdminLayout({
               className="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-xs font-semibold text-muted-foreground dark:text-[#a1a1aa] hover:text-red-500 hover:bg-red-500/10 transition-colors"
             >
               <LogOut className="h-3.5 w-3.5 text-red-500" />
-              <span>Sign Out</span>
+              <span>{t("admin.logout")}</span>
             </button>
           </form>
         </div>
@@ -195,9 +199,9 @@ export default async function AdminLayout({
         {/* Top Navbar */}
         <header className="hidden md:flex h-16 items-center justify-between px-8 border-b border-border dark:border-[#1e1e24] bg-card/80 dark:bg-[#111115]/80 backdrop-blur-md sticky top-0 z-40 transition-colors duration-300">
           <div className="flex items-center gap-4">
-            <h2 className="text-sm font-bold text-foreground dark:text-white tracking-tight">Admin Overview</h2>
+            <h2 className="text-sm font-bold text-foreground dark:text-white tracking-tight">{t("admin.overview")}</h2>
             <div className="h-4 w-[1px] bg-border dark:bg-[#2a2a32]" />
-            <span className="text-xs text-muted-foreground dark:text-[#71717a]">Commerce Automation & Engine Control</span>
+            <span className="text-xs text-muted-foreground dark:text-[#71717a]">{t("admin.control")}</span>
           </div>
 
           {/* Right Header Controls */}
@@ -207,7 +211,7 @@ export default async function AdminLayout({
               <Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-muted-foreground dark:text-[#71717a]" />
               <input
                 type="text"
-                placeholder="Search anything..."
+                placeholder={t("admin.search")}
                 className="w-full h-8 pl-8 pr-3 text-xs rounded-xl bg-muted/40 dark:bg-[#18181d] border border-border dark:border-[#26262e] text-foreground dark:text-white placeholder:text-muted-foreground dark:placeholder:text-[#71717a] focus:outline-none focus:border-[#ffd233] transition-colors"
               />
             </div>
@@ -216,11 +220,12 @@ export default async function AdminLayout({
             <button
               type="button"
               className="h-8 w-8 rounded-xl bg-card dark:bg-[#18181d] border border-border dark:border-[#26262e] text-muted-foreground dark:text-[#a1a1aa] hover:text-foreground dark:hover:text-white flex items-center justify-center transition-colors"
-              title="System Alerts"
+              title={t("admin.alerts")}
             >
               <Bell className="h-3.5 w-3.5" />
             </button>
 
+            <LanguageSwitcher compact />
             <ThemeToggle />
 
             {/* Admin User Profile Tag */}
@@ -230,7 +235,7 @@ export default async function AdminLayout({
               </div>
               <div className="flex flex-col text-left">
                 <span className="text-xs font-bold text-foreground dark:text-white leading-tight">Admin</span>
-                <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">● Online</span>
+                <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">● {t("admin.online")}</span>
               </div>
             </div>
           </div>

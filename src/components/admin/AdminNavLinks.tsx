@@ -12,18 +12,22 @@ import {
   Zap,
   HelpCircle,
   Cpu,
-  ChevronDown
+  ChevronDown,
+  CreditCard,
+  BadgeDollarSign
 } from "lucide-react";
+import { useI18n } from "@/components/i18n/I18nProvider";
 
 export function AdminNavLinks() {
   const pathname = usePathname();
+  const { t } = useI18n();
 
   return (
     <div className="space-y-5 text-xs">
       {/* 1. MAIN GROUP */}
       <div className="space-y-1">
         <div className="flex items-center justify-between px-3 py-1 text-[10px] font-bold tracking-wider text-muted-foreground/80 dark:text-[#71717a] uppercase">
-          <span>MAIN</span>
+          <span>{t("admin.main")}</span>
           <ChevronDown className="h-3 w-3 opacity-60" />
         </div>
 
@@ -38,7 +42,7 @@ export function AdminNavLinks() {
             }`}
           >
             <LayoutDashboard className={`h-4 w-4 ${pathname === "/admin" ? "text-amber-600 dark:text-[#ffd233]" : "text-muted-foreground dark:text-[#71717a]"}`} />
-            <span>Dashboard</span>
+            <span>{t("admin.dashboard")}</span>
           </Link>
 
           {/* All Blueprints */}
@@ -51,7 +55,7 @@ export function AdminNavLinks() {
             }`}
           >
             <Layers className={`h-4 w-4 ${pathname === "/admin/workflows" ? "text-amber-600 dark:text-[#ffd233]" : "text-muted-foreground dark:text-[#71717a]"}`} />
-            <span>Blueprints</span>
+            <span>{t("admin.blueprints")}</span>
           </Link>
 
           {/* Create Workflow */}
@@ -64,7 +68,21 @@ export function AdminNavLinks() {
             }`}
           >
             <PlusCircle className={`h-4 w-4 ${pathname === "/admin/workflows/new" ? "text-amber-600 dark:text-[#ffd233]" : "text-muted-foreground dark:text-[#71717a]"}`} />
-            <span>Create Blueprint</span>
+            <span>{t("admin.createBlueprint")}</span>
+          </Link>
+
+          {/* Client Workflow Requests CRM */}
+          <Link
+            href="/admin/subscriptions"
+            className={`flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-all ${pathname === "/admin/subscriptions" ? "bg-[#ffd233]/20 text-amber-900 dark:text-[#ffd233] border-l-2 border-[#ffd233] font-bold" : "text-muted-foreground hover:text-foreground hover:bg-muted"}`}
+          >
+            <CreditCard className="h-4 w-4" /><span>{t("admin.subscriptions")}</span>
+          </Link>
+          <Link
+            href="/admin/plans"
+            className={`flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-all ${pathname === "/admin/plans" ? "bg-[#ffd233]/20 text-amber-900 dark:text-[#ffd233] border-l-2 border-[#ffd233] font-bold" : "text-muted-foreground hover:text-foreground hover:bg-muted"}`}
+          >
+            <BadgeDollarSign className="h-4 w-4" /><span>{t("admin.plans")}</span>
           </Link>
 
           {/* Client Workflow Requests CRM */}
@@ -78,11 +96,19 @@ export function AdminNavLinks() {
           >
             <Zap className={`h-4 w-4 ${pathname?.startsWith("/admin/client-requests") ? "text-amber-600 dark:text-[#ffd233]" : "text-muted-foreground dark:text-[#71717a]"}`} />
             <div className="flex items-center justify-between w-full">
-              <span>Client Requests</span>
+              <span>{t("admin.clientRequests")}</span>
               <span className="px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-[#ffd233] text-black">
                 CRM
               </span>
             </div>
+          </Link>
+
+          {/* Leads */}
+          <Link
+            href="/admin/users"
+            className={`flex items-center gap-2.5 px-3 py-2 rounded-xl font-medium transition-all ${pathname === "/admin/users" ? "bg-[#ffd233]/20 text-amber-900 dark:text-[#ffd233] border-l-2 border-[#ffd233] font-bold" : "text-muted-foreground hover:text-foreground hover:bg-muted"}`}
+          >
+            <Users className="h-4 w-4" /><span>{t("admin.users")}</span>
           </Link>
 
           {/* Leads */}
@@ -95,7 +121,7 @@ export function AdminNavLinks() {
             }`}
           >
             <Users className={`h-4 w-4 ${pathname === "/admin/requests" ? "text-amber-600 dark:text-[#ffd233]" : "text-muted-foreground dark:text-[#71717a]"}`} />
-            <span>Public Leads</span>
+            <span>{t("admin.publicLeads")}</span>
           </Link>
 
           {/* Import n8n */}
@@ -108,7 +134,7 @@ export function AdminNavLinks() {
             }`}
           >
             <UploadCloud className={`h-4 w-4 ${pathname === "/admin/import" ? "text-amber-600 dark:text-[#ffd233]" : "text-muted-foreground dark:text-[#71717a]"}`} />
-            <span>Import n8n</span>
+            <span>{t("admin.import")}</span>
           </Link>
         </div>
       </div>
@@ -116,7 +142,7 @@ export function AdminNavLinks() {
       {/* 2. FEATURES GROUP */}
       <div className="space-y-1">
         <div className="flex items-center justify-between px-3 py-1 text-[10px] font-bold tracking-wider text-muted-foreground/80 dark:text-[#71717a] uppercase">
-          <span>FEATURES</span>
+          <span>{t("admin.features")}</span>
           <ChevronDown className="h-3 w-3 opacity-60" />
         </div>
 
@@ -126,7 +152,7 @@ export function AdminNavLinks() {
             className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-muted-foreground hover:text-foreground dark:text-[#a1a1aa] dark:hover:text-white hover:bg-muted dark:hover:bg-[#18181d] transition-all font-medium"
           >
             <Cpu className="h-4 w-4 text-muted-foreground dark:text-[#71717a]" />
-            <span>Integrations (40+)</span>
+            <span>{t("admin.integrations")}</span>
           </Link>
 
           <Link
@@ -134,7 +160,7 @@ export function AdminNavLinks() {
             className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-muted-foreground hover:text-foreground dark:text-[#a1a1aa] dark:hover:text-white hover:bg-muted dark:hover:bg-[#18181d] transition-all font-medium"
           >
             <Zap className="h-4 w-4 text-muted-foreground dark:text-[#71717a]" />
-            <span>Automation Flows</span>
+            <span>{t("admin.flows")}</span>
           </Link>
         </div>
       </div>
@@ -142,7 +168,7 @@ export function AdminNavLinks() {
       {/* 3. TOOLS GROUP */}
       <div className="space-y-1">
         <div className="flex items-center justify-between px-3 py-1 text-[10px] font-bold tracking-wider text-muted-foreground/80 dark:text-[#71717a] uppercase">
-          <span>TOOLS</span>
+          <span>{t("admin.tools")}</span>
           <ChevronDown className="h-3 w-3 opacity-60" />
         </div>
 
@@ -156,7 +182,7 @@ export function AdminNavLinks() {
             }`}
           >
             <SlidersHorizontal className={`h-4 w-4 ${pathname === "/admin/settings" ? "text-amber-600 dark:text-[#ffd233]" : "text-muted-foreground dark:text-[#71717a]"}`} />
-            <span>Site Customizer</span>
+            <span>{t("admin.customizer")}</span>
           </Link>
 
           <Link
@@ -164,7 +190,7 @@ export function AdminNavLinks() {
             className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-muted-foreground hover:text-foreground dark:text-[#a1a1aa] dark:hover:text-white hover:bg-muted dark:hover:bg-[#18181d] transition-all font-medium"
           >
             <HelpCircle className="h-4 w-4 text-muted-foreground dark:text-[#71717a]" />
-            <span>Help Center</span>
+            <span>{t("admin.help")}</span>
           </Link>
         </div>
       </div>

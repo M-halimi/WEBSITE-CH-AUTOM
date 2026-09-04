@@ -57,7 +57,7 @@ export function SubscriptionManager({
       router.refresh();
       setTimeout(() => setSuccessMessage(null), 5000);
     } else {
-      setErrorMessage(res.error || "Failed to update plan.");
+      setErrorMessage("The plan request could not be submitted.");
     }
   };
 
@@ -282,9 +282,7 @@ export function SubscriptionManager({
         <div className="text-center sm:text-right shrink-0">
           <span className="font-bold text-foreground dark:text-white block">Need Enterprise Architecture?</span>
           <a
-            href="https://wa.me/212600000000"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/contact"
             className="text-amber-700 dark:text-[#ffd233] font-bold hover:underline text-[11px]"
           >
             Talk to Solutions Engineer →
@@ -294,4 +292,3 @@ export function SubscriptionManager({
     </div>
   );
 }
-

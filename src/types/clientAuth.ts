@@ -11,4 +11,5 @@ export interface ClientSessionUser {
   businessType: string | null;
   clientProfile?: any;
   subscription?: any;
+  subscriptionState?: import("@/lib/subscriptions").SubscriptionState;
 }

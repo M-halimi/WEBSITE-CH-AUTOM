@@ -4,10 +4,12 @@ import { prisma } from "@/lib/prisma";
 import { WorkflowTableActions } from "@/components/admin/WorkflowTableActions";
 import { formatDate } from "@/lib/utils";
 import { PlatformIcon } from "@/components/ui/platform-icon";
+import { getTranslator } from "@/i18n/server";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminWorkflowsPage() {
+  const { t } = getTranslator();
   const workflows = await prisma.workflow.findMany({
     include: {
       category: true,
@@ -58,7 +60,7 @@ export default async function AdminWorkflowsPage() {
                 <th className="py-3 px-4">Blueprint</th>
                 <th className="py-3 px-4">Engines</th>
                 <th className="py-3 px-4">Category</th>
-                <th className="py-3 px-4">Price</th>
+                <th className="py-3 px-4">{t("nav.subscription")}</th>
                 <th className="py-3 px-4">Level</th>
                 <th className="py-3 px-4">Steps</th>
                 <th className="py-3 px-4">Status</th>
@@ -114,7 +116,7 @@ export default async function AdminWorkflowsPage() {
 
                   <td className="py-3.5 px-4">
                     <span className="font-bold text-xs text-foreground dark:text-white">
-                      {wf.price || "Free"}
+                      {t("workflow.included")}
                     </span>
                   </td>
 
@@ -141,7 +143,11 @@ export default async function AdminWorkflowsPage() {
                   </td>
 
                   <td className="py-3.5 px-4 text-right">
-                    <WorkflowTableActions workflow={wf} />
+                    <WorkflowTableActions
+                      workflowId={wf.id}
+                      slug={wf.slug}
+                      status={wf.status}
+                    />
                   </td>
                 </tr>
               ))}

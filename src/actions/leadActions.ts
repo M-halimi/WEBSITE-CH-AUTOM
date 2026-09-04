@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { requireAdminSession } from "@/actions/authActions";
 import { checkRateLimit } from "@/lib/rate-limit";
 
 const leadSchema = z.object({
@@ -71,6 +72,7 @@ export async function submitLeadRequest(formData: FormData) {
 }
 
 export async function updateLeadStatus(id: string, status: string) {
+  await requireAdminSession();
   try {
     await prisma.leadRequest.update({
       where: { id },
@@ -86,6 +88,7 @@ export async function updateLeadStatus(id: string, status: string) {
 }
 
 export async function deleteLeadRequest(id: string) {
+  await requireAdminSession();
   try {
     await prisma.leadRequest.delete({
       where: { id },

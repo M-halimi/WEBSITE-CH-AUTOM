@@ -19,6 +19,8 @@ import { PlatformIcon } from "@/components/ui/platform-icon";
 import { WorkflowViewer } from "@/components/workflows/WorkflowViewer";
 import { WorkflowDetailActions } from "@/components/workflows/WorkflowDetailActions";
 import { WorkflowCard } from "@/components/workflows/WorkflowCard";
+import { getClientSession } from "@/actions/clientAuthActions";
+import { getTranslator } from "@/i18n/server";
 
 export const dynamic = "force-dynamic";
 
@@ -49,7 +51,7 @@ export async function generateMetadata({ params }: WorkflowDetailPageProps): Pro
 }
 
 export default async function WorkflowDetailPage({ params }: WorkflowDetailPageProps) {
-  const workflow = await prisma.workflow.findUnique({
+  const [workflow, session] = await Promise.all([prisma.workflow.findUnique({
     where: { slug: params.slug },
     include: {
       category: true,
@@ -57,11 +59,15 @@ export default async function WorkflowDetailPage({ params }: WorkflowDetailPageP
       tags: { include: { tag: true } },
       steps: { orderBy: { order: "asc" } },
     },
-  });
+  }), getClientSession()]);
 
   if (!workflow) {
     notFound();
   }
+
+  const { t } = getTranslator();
+  const subscriptionState = session?.subscriptionState || "NONE";
+  const hasAccess = subscriptionState === "ACTIVE";
 
   // Fetch related workflows
   const relatedWorkflows = await prisma.workflow.findMany({
@@ -92,18 +98,18 @@ export default async function WorkflowDetailPage({ params }: WorkflowDetailPageP
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-8 sm:py-12 space-y-10">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
-          <Link href="/" className="hover:text-foreground transition-colors">Home</Link>
-          <ChevronRight className="h-3 w-3 opacity-60" />
-          <Link href="/workflows" className="hover:text-foreground transition-colors">Blueprints</Link>
+          <Link href="/" className="hover:text-foreground transition-colors">{t("detail.home")}</Link>
+          <ChevronRight className="rtl-flip h-3 w-3 opacity-60" />
+          <Link href="/workflows" className="hover:text-foreground transition-colors">{t("detail.workflows")}</Link>
           {workflow.category && (
             <>
-              <ChevronRight className="h-3 w-3 opacity-60" />
+              <ChevronRight className="rtl-flip h-3 w-3 opacity-60" />
               <Link href={`/workflows?category=${workflow.category.slug}`} className="hover:text-amber-600 dark:hover:text-[#ffd233] transition-colors font-medium">
                 {workflow.category.name}
               </Link>
             </>
           )}
-          <ChevronRight className="h-3 w-3 opacity-60" />
+          <ChevronRight className="rtl-flip h-3 w-3 opacity-60" />
           <span className="text-foreground font-semibold truncate max-w-xs">{workflow.title}</span>
         </nav>
 
@@ -121,7 +127,7 @@ export default async function WorkflowDetailPage({ params }: WorkflowDetailPageP
                 )}
                 {workflow.featured && (
                   <Badge variant="outline" className="text-xs font-semibold">
-                    Featured Blueprint
+                    {t("workflow.featured")}
                   </Badge>
                 )}
                 <span className="text-xs text-muted-foreground font-medium">
@@ -140,7 +146,7 @@ export default async function WorkflowDetailPage({ params }: WorkflowDetailPageP
               {/* Compatible Platforms with Authentic Logos */}
               {workflow.platforms.length > 0 && (
                 <div className="flex items-center gap-2 flex-wrap pt-2">
-                  <span className="text-xs font-semibold text-muted-foreground">Engines:</span>
+                  <span className="text-xs font-semibold text-muted-foreground">{t("detail.engines")}:</span>
                   {workflow.platforms.map(({ platform }) => (
                     <div
                       key={platform.id}
@@ -173,10 +179,10 @@ export default async function WorkflowDetailPage({ params }: WorkflowDetailPageP
               <div className="flex items-center justify-between">
                 <h2 className="text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2.5">
                   <Zap className="h-5 w-5 text-amber-500 fill-current" />
-                  Visual Execution Pipeline
+                  {t("detail.pipeline")}
                 </h2>
                 <span className="text-xs font-bold px-3 py-1 rounded-full bg-card border border-border text-foreground shadow-xs">
-                  {workflow.steps.length} Executed Nodes
+                  {t("detail.executedNodes", { count: workflow.steps.length })}
                 </span>
               </div>
 
@@ -189,7 +195,7 @@ export default async function WorkflowDetailPage({ params }: WorkflowDetailPageP
             <section className="rounded-3xl border border-border bg-card p-6 sm:p-8 space-y-4 shadow-sm">
               <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
                 <Sparkles className="h-4 w-4 text-amber-500" />
-                Automation Specifications & Logic
+                {t("detail.specifications")}
               </h2>
               <div className="prose max-w-none text-xs sm:text-sm text-muted-foreground whitespace-pre-line leading-relaxed">
                 {workflow.description}
@@ -200,33 +206,33 @@ export default async function WorkflowDetailPage({ params }: WorkflowDetailPageP
           {/* Right Column (4 cols): Sticky Order Box */}
           <div className="lg:col-span-4 lg:sticky lg:top-24 space-y-6">
             <div className="rounded-3xl border border-border bg-card p-6 shadow-sm space-y-6">
-              {/* Price & Delivery */}
+              {/* SaaS subscription access — pricing is centralized on /plans */}
               <div>
                 <div className="flex items-baseline justify-between">
-                  <span className="text-3xl font-extrabold text-foreground">
-                    {workflow.price || "Free Blueprint"}
+                  <span className={`text-sm font-extrabold ${hasAccess ? "text-emerald-600 dark:text-emerald-400" : "text-amber-700 dark:text-[#ffd233]"}`}>
+                    {hasAccess ? t("workflow.included") : subscriptionState === "EXPIRED" ? t("workflow.expired") : session ? t("workflow.required") : t("workflow.available")}
                   </span>
                   <span className="text-xs text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1">
-                    <CheckCircle2 className="h-4 w-4" /> Instant Turnkey
+                    <CheckCircle2 className="h-4 w-4" /> {t("workflow.preview")}
                   </span>
                 </div>
                 <p className="text-xs text-muted-foreground mt-1.5">
-                  Complete n8n JSON blueprint with verified webhook nodes.
+                  {hasAccess ? t("workflow.accessActive") : t("workflow.accessInactive")}
                 </p>
               </div>
 
               {/* Action Buttons */}
-              <WorkflowDetailActions workflow={workflow} />
+              <WorkflowDetailActions workflow={workflow} isAuthenticated={Boolean(session)} subscriptionState={subscriptionState} />
 
               {/* Guarantee Points */}
               <div className="pt-6 border-t border-border space-y-3 text-xs text-muted-foreground">
                 <div className="flex items-start gap-2.5">
                   <ShieldCheck className="h-4 w-4 text-amber-600 dark:text-[#ffd233] shrink-0 mt-0.5" />
-                  <span><strong>100% Code Ownership:</strong> Self-host forever with no recurring subscription markups.</span>
+                  <span><strong>{t("workflow.accessTitle")}:</strong> {hasAccess ? t("workflow.accessActive") : t("workflow.accessInactive")}</span>
                 </div>
                 <div className="flex items-start gap-2.5">
                   <Clock className="h-4 w-4 text-amber-600 dark:text-[#ffd233] shrink-0 mt-0.5" />
-                  <span><strong>Turnkey Installation:</strong> Option to have our engineers set it up on your servers in 48 hours.</span>
+                  <span><strong>{t("detail.installationTitle")}:</strong> {t("detail.installationText")}</span>
                 </div>
               </div>
             </div>
@@ -234,17 +240,17 @@ export default async function WorkflowDetailPage({ params }: WorkflowDetailPageP
             {/* Triggers & Outcomes */}
             <div className="rounded-3xl border border-border bg-card p-6 space-y-4 shadow-sm">
               <h3 className="text-xs font-bold uppercase tracking-wider text-foreground flex items-center gap-1.5">
-                <Cpu className="h-4 w-4 text-amber-500" /> Trigger & Expected Output
+                <Cpu className="h-4 w-4 text-amber-500" /> {t("detail.triggerOutput")}
               </h3>
               {workflow.triggersDescription && (
                 <div className="text-xs text-muted-foreground">
-                  <strong className="text-foreground block mb-1">When Triggered:</strong>
+                  <strong className="text-foreground block mb-1">{t("detail.whenTriggered")}:</strong>
                   {workflow.triggersDescription}
                 </div>
               )}
               {workflow.outcomesDescription && (
                 <div className="text-xs text-muted-foreground pt-3 border-t border-border">
-                  <strong className="text-foreground block mb-1">Expected Output:</strong>
+                  <strong className="text-foreground block mb-1">{t("detail.expectedOutput")}:</strong>
                   {workflow.outcomesDescription}
                 </div>
               )}
@@ -254,7 +260,7 @@ export default async function WorkflowDetailPage({ params }: WorkflowDetailPageP
             {requirementsList.length > 0 && (
               <div className="rounded-3xl border border-border bg-card p-6 space-y-3 shadow-xs">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-foreground">
-                  Required Accounts & APIs
+                  {t("detail.requirements")}
                 </h3>
                 <ul className="space-y-2 text-xs text-muted-foreground">
                   {requirementsList.map((req, idx) => (
@@ -274,15 +280,15 @@ export default async function WorkflowDetailPage({ params }: WorkflowDetailPageP
           <section className="pt-12 border-t border-border space-y-6">
             <div className="flex items-center justify-between">
               <h2 className="text-2xl font-bold text-foreground">
-                Related Blueprints
+                {t("detail.related")}
               </h2>
               <Link href="/workflows" className="text-xs font-bold text-amber-600 dark:text-[#ffd233] hover:underline">
-                Explore all
+                {t("detail.exploreAll")}
               </Link>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {relatedWorkflows.map((rel, idx) => (
-                <WorkflowCard key={rel.id} workflow={rel} illustrationIndex={idx} />
+                <WorkflowCard key={rel.id} workflow={rel} illustrationIndex={idx} isAuthenticated={Boolean(session)} subscriptionState={subscriptionState} />
               ))}
             </div>
           </section>

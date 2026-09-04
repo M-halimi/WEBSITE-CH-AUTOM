@@ -59,6 +59,12 @@
     font-family: 'Inter Variable', Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
+  html[dir="rtl"] body {
+    font-family: Tahoma, Arial, 'Segoe UI', sans-serif;
+  }
+  html[dir="rtl"] .rtl-flip {
+    transform: scaleX(-1);
+  }
 }
 
 /* Enhanced Keyframe Animations for Modern SaaS Cards */

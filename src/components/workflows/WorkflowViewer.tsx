@@ -18,6 +18,7 @@ import {
   ShieldCheck
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useI18n } from "@/components/i18n/I18nProvider";
 
 export interface StepItem {
   id?: string;
@@ -36,6 +37,7 @@ interface WorkflowViewerProps {
 }
 
 export function WorkflowViewer({ steps, workflowTitle, summary }: WorkflowViewerProps) {
+  const { t } = useI18n();
   const [viewMode, setViewMode] = React.useState<"SIMPLE" | "ADVANCED">("SIMPLE");
   const sortedSteps = [...steps].sort((a, b) => a.order - b.order);
 
@@ -43,35 +45,35 @@ export function WorkflowViewer({ steps, workflowTitle, summary }: WorkflowViewer
     switch (type.toUpperCase()) {
       case "TRIGGER":
         return {
-          label: "Trigger Event",
+          label: t("viewer.trigger"),
           badgeVariant: "default" as const,
           nodeBg: "bg-[#ffd233] text-black shadow-xs",
           icon: Zap,
         };
       case "ACTION":
         return {
-          label: "Action Node",
+          label: t("viewer.action"),
           badgeVariant: "outline" as const,
           nodeBg: "bg-card text-foreground border border-border shadow-xs",
           icon: Zap,
         };
       case "CONDITION":
         return {
-          label: "Branch / Filter",
+          label: t("viewer.condition"),
           badgeVariant: "secondary" as const,
           nodeBg: "bg-amber-100 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300",
           icon: GitBranch,
         };
       case "TRANSFORM":
         return {
-          label: "Data Transform",
+          label: t("viewer.transform"),
           badgeVariant: "outline" as const,
           nodeBg: "bg-muted text-foreground",
           icon: Shuffle,
         };
       case "NOTIFICATION":
         return {
-          label: "Alert / Notification",
+          label: t("viewer.notification"),
           badgeVariant: "default" as const,
           nodeBg: "bg-[#ffd233] text-black",
           icon: Bell,
@@ -89,7 +91,7 @@ export function WorkflowViewer({ steps, workflowTitle, summary }: WorkflowViewer
   if (sortedSteps.length === 0) {
     return (
       <div className="rounded-3xl border border-border p-8 text-center bg-card">
-        <p className="text-xs text-muted-foreground">No visual steps defined for this workflow yet.</p>
+        <p className="text-xs text-muted-foreground">{t("viewer.empty")}</p>
       </div>
     );
   }
@@ -109,7 +111,7 @@ export function WorkflowViewer({ steps, workflowTitle, summary }: WorkflowViewer
             }`}
           >
             <Sparkles className="h-3.5 w-3.5" />
-            <span>💡 Simple View (للتجار - شرح مبسط)</span>
+            <span>{t("viewer.simple")}</span>
           </button>
 
           <button
@@ -122,12 +124,12 @@ export function WorkflowViewer({ steps, workflowTitle, summary }: WorkflowViewer
             }`}
           >
             <Cpu className="h-3.5 w-3.5" />
-            <span>⚙️ Advanced Node Specs (للمهندسين)</span>
+            <span>{t("viewer.advanced")}</span>
           </button>
         </div>
 
         <span className="text-[11px] text-muted-foreground hidden sm:block">
-          {viewMode === "SIMPLE" ? "Zero technical jargon • Plain language flow" : `${sortedSteps.length} Connected Nodes`}
+          {viewMode === "SIMPLE" ? t("viewer.simpleHint") : t("viewer.nodeCount", { count: sortedSteps.length })}
         </span>
       </div>
 
@@ -138,37 +140,37 @@ export function WorkflowViewer({ steps, workflowTitle, summary }: WorkflowViewer
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="p-5 rounded-3xl bg-card dark:bg-[#141418] border border-border dark:border-[#22222a] space-y-2 shadow-xs relative">
               <span className="text-[10px] font-black uppercase tracking-wider text-amber-600 dark:text-[#ffd233] bg-amber-500/10 px-2.5 py-0.5 rounded-full border border-amber-500/20">
-                1. When this happens
+                {t("viewer.when")}
               </span>
               <h4 className="text-sm font-bold text-foreground dark:text-white">
-                {sortedSteps[0]?.name || "Customer Trigger"}
+                {sortedSteps[0]?.name || t("viewer.triggerFallback")}
               </h4>
               <p className="text-xs text-muted-foreground dark:text-[#8e8e93] leading-relaxed">
-                {sortedSteps[0]?.description || "New inquiry, order placed, or lead submitted."}
+                {sortedSteps[0]?.description || t("viewer.triggerDescription")}
               </p>
             </div>
 
             <div className="p-5 rounded-3xl bg-card dark:bg-[#141418] border border-border dark:border-[#22222a] space-y-2 shadow-xs relative">
               <span className="text-[10px] font-black uppercase tracking-wider text-sky-600 dark:text-sky-400 bg-sky-500/10 px-2.5 py-0.5 rounded-full border border-sky-500/20">
-                2. System Automatically Does
+                {t("viewer.automatic")}
               </span>
               <h4 className="text-sm font-bold text-foreground dark:text-white">
-                {sortedSteps[1]?.name || "AI Extraction & Processing"}
+                {sortedSteps[1]?.name || t("viewer.processFallback")}
               </h4>
               <p className="text-xs text-muted-foreground dark:text-[#8e8e93] leading-relaxed">
-                {sortedSteps[1]?.description || "Parses customer data, checks inventory, and formats response."}
+                {sortedSteps[1]?.description || t("viewer.processDescription")}
               </p>
             </div>
 
             <div className="p-5 rounded-3xl bg-card dark:bg-[#141418] border border-emerald-500/30 bg-emerald-500/5 dark:bg-[#101814] space-y-2 shadow-xs relative">
               <span className="text-[10px] font-black uppercase tracking-wider text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
-                3. Final Instant Result
+                {t("viewer.result")}
               </span>
               <h4 className="text-sm font-bold text-foreground dark:text-white">
-                {sortedSteps[sortedSteps.length - 1]?.name || "Instant Confirmation & Sync"}
+                {sortedSteps[sortedSteps.length - 1]?.name || t("viewer.resultFallback")}
               </h4>
               <p className="text-xs text-muted-foreground dark:text-[#8e8e93] leading-relaxed">
-                {sortedSteps[sortedSteps.length - 1]?.description || "WhatsApp message sent and Google Sheets / CRM updated."}
+                {sortedSteps[sortedSteps.length - 1]?.description || t("viewer.resultDescription")}
               </p>
             </div>
           </div>
@@ -178,15 +180,15 @@ export function WorkflowViewer({ steps, workflowTitle, summary }: WorkflowViewer
             <div className="flex items-start gap-3">
               <Clock className="h-5 w-5 text-amber-600 dark:text-[#ffd233] shrink-0 mt-0.5" />
               <div>
-                <strong className="text-foreground dark:text-white block font-bold">Saves 2–4 Hours Daily:</strong>
-                <span className="text-muted-foreground">Eliminates manual copy-pasting, customer verification calls, and Excel typing.</span>
+                <strong className="text-foreground dark:text-white block font-bold">{t("viewer.timeTitle")}:</strong>
+                <span className="text-muted-foreground">{t("viewer.timeText")}</span>
               </div>
             </div>
             <div className="flex items-start gap-3">
               <ShieldCheck className="h-5 w-5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
               <div>
-                <strong className="text-foreground dark:text-white block font-bold">Zero Human Mistake:</strong>
-                <span className="text-muted-foreground">Addresses, invoice numbers, and phone numbers are verified 100% automatically.</span>
+                <strong className="text-foreground dark:text-white block font-bold">{t("viewer.accuracyTitle")}:</strong>
+                <span className="text-muted-foreground">{t("viewer.accuracyText")}</span>
               </div>
             </div>
           </div>
@@ -213,7 +215,7 @@ export function WorkflowViewer({ steps, workflowTitle, summary }: WorkflowViewer
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-border dark:border-[#22222a]">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                        Step {step.order}
+                        {t("viewer.step", { count: step.order })}
                       </span>
                       <Badge variant={meta.badgeVariant} className="text-[11px]">
                         {meta.label}

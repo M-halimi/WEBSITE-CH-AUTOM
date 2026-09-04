@@ -7,6 +7,8 @@ import { getAllPlatforms } from "@/lib/ensurePlatforms";
 import { WorkflowCard } from "@/components/workflows/WorkflowCard";
 import { WorkflowFilters } from "@/components/workflows/WorkflowFilters";
 import { Button } from "@/components/ui/button";
+import { getClientSession } from "@/actions/clientAuthActions";
+import { getTranslator } from "@/i18n/server";
 
 export const dynamic = "force-dynamic";
 
@@ -30,6 +32,8 @@ interface WorkflowsPageProps {
 export default async function WorkflowsCatalogPage({
   searchParams,
 }: WorkflowsPageProps) {
+  const session = await getClientSession();
+  const { t } = getTranslator();
   const q = searchParams.q || "";
   const categorySlug = searchParams.category || "";
   const platformSlug = searchParams.platform || "";
@@ -102,13 +106,13 @@ export default async function WorkflowsCatalogPage({
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-8 border-b border-border">
           <div>
             <div className="text-xs font-bold text-amber-600 dark:text-[#ffd233] uppercase tracking-wider mb-2">
-              Blueprint Marketplace
+              {t("catalog.eyebrow")}
             </div>
             <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground">
-              Automation Blueprints
+              {t("catalog.title")}
             </h1>
             <p className="text-xs sm:text-sm text-muted-foreground mt-2">
-              Showing <strong className="text-foreground font-semibold">{totalCount}</strong> verified blueprints ready for immediate deployment.
+              {t("catalog.showing", { count: totalCount })}
             </p>
           </div>
 
@@ -117,7 +121,7 @@ export default async function WorkflowsCatalogPage({
             className="inline-flex items-center justify-center gap-2 h-9 px-4 text-xs font-bold rounded-full border border-border bg-card hover:bg-muted text-foreground transition-all shadow-xs"
           >
             <Sparkles className="h-3.5 w-3.5 text-[#ffd233]" />
-            <span>Request Custom Blueprint</span>
+            <span>{t("catalog.requestCustom")}</span>
           </Link>
         </div>
 
@@ -142,6 +146,8 @@ export default async function WorkflowsCatalogPage({
                 key={workflow.id} 
                 workflow={workflow} 
                 illustrationIndex={idx}
+                isAuthenticated={Boolean(session)}
+                subscriptionState={session?.subscriptionState || "NONE"}
               />
             ))}
           </div>
@@ -151,23 +157,23 @@ export default async function WorkflowsCatalogPage({
               <AlertCircle className="h-6 w-6" />
             </div>
             <h3 className="text-lg font-bold text-foreground">
-              No blueprints found
+              {t("catalog.emptyTitle")}
             </h3>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              We couldn&apos;t find any automation matching your current filter criteria.
+              {t("catalog.emptyText")}
             </p>
             <div className="pt-2 flex justify-center gap-3">
               <Link
                 href="/workflows"
                 className="inline-flex items-center justify-center h-9 px-4 rounded-full bg-[#ffd233] text-black font-bold text-xs shadow-xs hover:bg-[#f5c71a] transition-all"
               >
-                Reset All Filters
+                {t("catalog.resetFilters")}
               </Link>
               <Link
                 href="/request"
                 className="inline-flex items-center justify-center h-9 px-4 rounded-full border border-border bg-card text-foreground hover:bg-muted text-xs font-semibold shadow-xs transition-all"
               >
-                Request Custom Build
+                {t("catalog.requestBuild")}
               </Link>
             </div>
           </div>

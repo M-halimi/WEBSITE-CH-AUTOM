@@ -18,7 +18,6 @@ export interface WorkflowFormData {
   estimatedTime: string;
   status: string; // DRAFT, PUBLISHED, ARCHIVED
   featured: boolean;
-  price?: string;
   imageUrl?: string | null;
   categoryId?: string;
   triggersDescription?: string;
@@ -27,4 +26,3 @@ export interface WorkflowFormData {
   tagIds?: string[];
   steps: StepInput[];
 }
-

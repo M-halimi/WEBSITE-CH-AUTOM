@@ -3,116 +3,109 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { MessageSquare, Sparkles, Share2, Check, Download, Zap, Loader2, CheckCircle2 } from "lucide-react";
+import { Check, CheckCircle2, Loader2, MessageSquare, Share2, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { LeadFormModal } from "./LeadFormModal";
 import { generateWhatsAppLink } from "@/lib/whatsapp";
 import { activateBlueprintForClient } from "@/actions/clientBlueprintActions";
+import { useI18n } from "@/components/i18n/I18nProvider";
+import type { SubscriptionState } from "@/lib/subscriptions";
 
 interface WorkflowDetailActionsProps {
-  workflow: {
-    id: string;
-    title: string;
-    slug: string;
-  };
+  workflow: { id: string; title: string; slug: string };
+  isAuthenticated: boolean;
+  subscriptionState: SubscriptionState;
 }
 
-export function WorkflowDetailActions({ workflow }: WorkflowDetailActionsProps) {
+export function WorkflowDetailActions({ workflow, isAuthenticated, subscriptionState }: WorkflowDetailActionsProps) {
   const router = useRouter();
-  const [modalOpen, setModalOpen] = React.useState(false);
+  const { t } = useI18n();
   const [copied, setCopied] = React.useState(false);
   const [activating, setActivating] = React.useState(false);
-  const [activationSuccess, setActivationSuccess] = React.useState<string | null>(null);
+  const [activationSuccess, setActivationSuccess] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
 
-  const waLink = generateWhatsAppLink({
-    workflowTitle: workflow.title,
-    workflowSlug: workflow.slug,
-  });
+  const hasAccess = subscriptionState === "ACTIVE";
+  const isExpired = subscriptionState === "EXPIRED";
+  const planLabel = isExpired
+    ? t("workflow.renew")
+    : isAuthenticated
+      ? t("workflow.viewPlans")
+      : t("workflow.subscribeAccess");
+  const planHref = "/plans";
+
+  const waLink = generateWhatsAppLink({ workflowTitle: workflow.title, workflowSlug: workflow.slug });
 
   const handleShare = () => {
-    if (typeof window !== "undefined") {
-      navigator.clipboard.writeText(window.location.href);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
+    navigator.clipboard.writeText(window.location.href);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   const handleDirectDeploy = async () => {
     setActivating(true);
-    const res = await activateBlueprintForClient(workflow.id);
+    setError(null);
+    const result = await activateBlueprintForClient(workflow.id);
     setActivating(false);
 
-    if (res.success && res.projectId) {
-      setActivationSuccess("Activated in your workspace!");
-      setTimeout(() => {
-        router.push(`/dashboard/workflows/${res.projectId}`);
-      }, 1000);
-    } else {
-      // If not logged in or quota exceeded, open lead/deploy modal or redirect to register
-      setModalOpen(true);
+    if (result.success && result.projectId) {
+      setActivationSuccess(true);
+      setTimeout(() => router.push(`/dashboard/workflows/${result.projectId}`), 700);
+      return;
     }
+
+    if (("authRequired" in result && result.authRequired) || ("subscriptionRequired" in result && result.subscriptionRequired)) {
+      router.push("/plans");
+      return;
+    }
+    setError(result.error || t("workflow.activationFailed"));
   };
 
   return (
-    <>
-      <div className="flex flex-col gap-3 w-full">
-        {/* 1. Full-Width Primary Action Button */}
+    <div className="flex w-full flex-col gap-3">
+      {hasAccess ? (
         <Button
           size="lg"
-          disabled={activating}
+          disabled={activating || activationSuccess}
           onClick={handleDirectDeploy}
-          className="w-full h-12 rounded-full font-black bg-[#ffd233] hover:bg-[#f5c71a] text-black text-sm shadow-md shadow-[#ffd233]/20 gap-2 transition-transform active:scale-98"
+          className="h-12 w-full gap-2 rounded-full bg-[#ffd233] text-sm font-black text-black shadow-md shadow-[#ffd233]/20 hover:bg-[#f5c71a]"
         >
-          {activating ? (
-            <>
-              <Loader2 className="h-4 w-4 animate-spin" />
-              <span>Activating in Workspace...</span>
-            </>
-          ) : activationSuccess ? (
-            <>
-              <CheckCircle2 className="h-4 w-4 text-emerald-800" />
-              <span>{activationSuccess}</span>
-            </>
-          ) : (
-            <>
-              <Zap className="h-4 w-4 fill-current" />
-              <span>⚡ Activate to My Workspace</span>
-            </>
-          )}
+          {activating ? <Loader2 className="h-4 w-4 animate-spin" /> : activationSuccess ? <CheckCircle2 className="h-4 w-4 text-emerald-800" /> : <Zap className="h-4 w-4 fill-current" />}
+          <span>{activating ? t("workflow.activating") : activationSuccess ? t("workflow.activated") : t("workflow.activate")}</span>
         </Button>
+      ) : (
+        <Link
+          href={planHref}
+          className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#ffd233] px-5 text-sm font-black text-black shadow-md shadow-[#ffd233]/20 hover:bg-[#f5c71a]"
+        >
+          <Zap className="h-4 w-4 fill-current" />
+          {planLabel}
+        </Link>
+      )}
 
-        {/* 2. Secondary Actions Row (WhatsApp + Share) */}
-        <div className="flex items-center gap-2.5 w-full">
-          <a
-            href={waLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex-1 h-11 rounded-full font-bold text-xs gap-2 border border-border bg-card text-foreground hover:bg-muted inline-flex items-center justify-center transition-all shadow-xs"
-          >
-            <MessageSquare className="h-4 w-4 text-amber-600 dark:text-[#ffd233]" />
-            <span>WhatsApp Engineer</span>
-          </a>
+      {error && <p className="rounded-xl bg-red-500/10 p-3 text-xs font-semibold text-red-600">{error}</p>}
 
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={handleShare}
-            className="h-11 w-11 rounded-full border-border bg-card text-foreground hover:bg-muted shrink-0"
-            title="Share blueprint"
-            aria-label="Share blueprint link"
-          >
-            {copied ? <Check className="h-4 w-4 text-emerald-600" /> : <Share2 className="h-4 w-4" />}
-          </Button>
-        </div>
+      <div className="flex w-full items-center gap-2.5">
+        <a
+          href={waLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-full border border-border bg-card text-xs font-bold text-foreground shadow-xs transition-all hover:bg-muted"
+        >
+          <MessageSquare className="h-4 w-4 text-amber-600 dark:text-[#ffd233]" />
+          <span>{t("workflow.whatsapp")}</span>
+        </a>
+
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={handleShare}
+          className="h-11 w-11 shrink-0 rounded-full border-border bg-card text-foreground hover:bg-muted"
+          title={t("workflow.shareTitle")}
+          aria-label={t("workflow.share")}
+        >
+          {copied ? <Check className="h-4 w-4 text-emerald-600" /> : <Share2 className="h-4 w-4" />}
+        </Button>
       </div>
-
-      <LeadFormModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        workflowId={workflow.id}
-        workflowTitle={workflow.title}
-        workflowSlug={workflow.slug}
-      />
-    </>
+    </div>
   );
 }

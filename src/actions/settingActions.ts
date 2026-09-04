@@ -2,13 +2,19 @@
 
 import { revalidatePath } from "next/cache";
 import { updateSiteSettings, SiteSettingsData } from "@/lib/settings";
+import { requireAdminSession } from "@/actions/authActions";
 
 export async function saveSiteSettings(formData: FormData) {
+  await requireAdminSession();
   try {
+    const whatsappNumber = String(formData.get("whatsappNumber") || "").trim();
+    if (!/^\+?[1-9]\d{7,14}$/.test(whatsappNumber)) {
+      return { success: false, error: "Enter a valid WhatsApp number in international format." };
+    }
     const payload: Partial<SiteSettingsData> = {
       siteName: formData.get("siteName") as string,
       siteDescription: formData.get("siteDescription") as string,
-      whatsappNumber: formData.get("whatsappNumber") as string,
+      whatsappNumber,
       defaultCurrency: formData.get("defaultCurrency") as string,
       heroBadge: formData.get("heroBadge") as string,
       heroTitle: formData.get("heroTitle") as string,
@@ -33,4 +39,3 @@ export async function saveSiteSettings(formData: FormData) {
     return { success: false, error: error.message || "Failed to update site settings." };
   }
 }
-

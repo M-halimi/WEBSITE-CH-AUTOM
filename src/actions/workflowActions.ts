@@ -3,10 +3,12 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { slugify } from "@/lib/utils";
+import { requireAdminSession } from "@/actions/authActions";
 
 import { StepInput, WorkflowFormData } from "@/types/workflow";
 
 export async function createWorkflow(data: WorkflowFormData) {
+  await requireAdminSession();
   try {
     const slug = data.slug ? slugify(data.slug) : slugify(data.title);
 
@@ -24,7 +26,6 @@ export async function createWorkflow(data: WorkflowFormData) {
         estimatedTime: data.estimatedTime || "15 mins",
         status: data.status || "DRAFT",
         featured: data.featured || false,
-        price: data.price || "Free Template",
         imageUrl: data.imageUrl || null,
         categoryId: data.categoryId || null,
         triggersDescription: data.triggersDescription,
@@ -69,6 +70,7 @@ export async function createWorkflow(data: WorkflowFormData) {
 }
 
 export async function updateWorkflow(id: string, data: WorkflowFormData) {
+  await requireAdminSession();
   try {
     const slug = data.slug ? slugify(data.slug) : slugify(data.title);
 
@@ -96,7 +98,6 @@ export async function updateWorkflow(id: string, data: WorkflowFormData) {
         estimatedTime: data.estimatedTime,
         status: data.status,
         featured: data.featured,
-        price: data.price,
         imageUrl: data.imageUrl !== undefined ? data.imageUrl : undefined,
         categoryId: data.categoryId || null,
         triggersDescription: data.triggersDescription,
@@ -142,6 +143,7 @@ export async function updateWorkflow(id: string, data: WorkflowFormData) {
 }
 
 export async function deleteWorkflow(id: string) {
+  await requireAdminSession();
   try {
     await prisma.workflow.delete({
       where: { id },
@@ -157,6 +159,7 @@ export async function deleteWorkflow(id: string) {
 }
 
 export async function togglePublishStatus(id: string, currentStatus: string) {
+  await requireAdminSession();
   try {
     const newStatus = currentStatus === "PUBLISHED" ? "DRAFT" : "PUBLISHED";
     await prisma.workflow.update({
@@ -174,6 +177,7 @@ export async function togglePublishStatus(id: string, currentStatus: string) {
 }
 
 export async function parseN8nJson(jsonString: string) {
+  await requireAdminSession();
   try {
     const parsed = JSON.parse(jsonString);
     const nodes = parsed.nodes || [];
@@ -218,6 +222,7 @@ export async function parseN8nJson(jsonString: string) {
 }
 
 export async function createPlatform(name: string, color: string = "amber") {
+  await requireAdminSession();
   try {
     const trimmed = name.trim();
     if (!trimmed) {

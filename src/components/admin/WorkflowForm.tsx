@@ -12,10 +12,7 @@ import {
   Zap,
   Sparkles,
   Image as ImageIcon,
-  Tag as TagIcon,
-  DollarSign,
   Link as LinkIcon,
-  Coins,
   Check,
   Search,
   Cpu,
@@ -33,6 +30,7 @@ import {
 } from "@/actions/workflowActions";
 import { StepInput, WorkflowFormData } from "@/types/workflow";
 import { slugify, isValidImageUrl } from "@/lib/utils";
+import { useI18n } from "@/components/i18n/I18nProvider";
 
 interface WorkflowFormProps {
   initialData?: {
@@ -45,7 +43,6 @@ interface WorkflowFormProps {
     estimatedTime: string;
     status: string;
     featured: boolean;
-    price?: string | null;
     imageUrl?: string | null;
     categoryId?: string | null;
     triggersDescription?: string | null;
@@ -90,6 +87,7 @@ export function WorkflowForm({
   platforms: initialPlatforms,
 }: WorkflowFormProps) {
   const router = useRouter();
+  const { t } = useI18n();
   const [mounted, setMounted] = React.useState(false);
   const [pending, setPending] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
@@ -115,19 +113,6 @@ export function WorkflowForm({
     initialData?.featured || false,
   );
   
-  // Price & Currency states
-  const [price, setPrice] = React.useState(
-    initialData?.price || "Free Template",
-  );
-  const [activeCurrency, setActiveCurrency] = React.useState<"USD" | "MAD" | "EUR" | "FREE" | "CUSTOM">(() => {
-    const p = (initialData?.price || "Free Template").toLowerCase();
-    if (p.includes("$") || p.includes("usd")) return "USD";
-    if (p.includes("mad") || p.includes("dh")) return "MAD";
-    if (p.includes("€") || p.includes("eur")) return "EUR";
-    if (p.includes("free")) return "FREE";
-    return "CUSTOM";
-  });
-
   const [imageUrl, setImageUrl] = React.useState(
     initialData?.imageUrl || "",
   );
@@ -168,19 +153,6 @@ export function WorkflowForm({
     setTitle(val);
     if (!initialData?.id) {
       setSlug(slugify(val));
-    }
-  };
-
-  const handleCurrencySwitch = (curr: "USD" | "MAD" | "EUR" | "FREE" | "CUSTOM") => {
-    setActiveCurrency(curr);
-    if (curr === "FREE") {
-      setPrice("Free Template");
-    } else if (curr === "USD") {
-      setPrice("$49");
-    } else if (curr === "MAD") {
-      setPrice("1,500 MAD");
-    } else if (curr === "EUR") {
-      setPrice("49 €");
     }
   };
 
@@ -259,7 +231,6 @@ export function WorkflowForm({
       estimatedTime,
       status,
       featured,
-      price,
       imageUrl: imageUrl.trim() || null,
       categoryId: categoryId || undefined,
       triggersDescription: triggersDesc,
@@ -364,129 +335,8 @@ export function WorkflowForm({
           />
         </div>
 
-        {/* Currency & Price Setting Section */}
-        <div className="rounded-xl border border-border dark:border-[#26262e] bg-muted/40 dark:bg-[#1a1a22] p-4 space-y-3">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-            <label className="text-xs font-bold text-foreground dark:text-white flex items-center gap-1.5">
-              <Coins className="h-4 w-4 text-amber-600 dark:text-[#ffd233]" />
-              Currency & Price Setting *
-            </label>
-            
-            {/* Currency Tabs */}
-            <div className="flex items-center gap-1 bg-card dark:bg-[#121216] border border-border dark:border-[#26262e] p-1 rounded-xl w-fit shadow-xs">
-              <button
-                type="button"
-                onClick={() => handleCurrencySwitch("USD")}
-                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
-                  activeCurrency === "USD"
-                    ? "bg-[#ffd233] text-black shadow-xs"
-                    : "text-muted-foreground dark:text-[#71717a] hover:text-foreground dark:hover:text-white"
-                }`}
-              >
-                $ USD
-              </button>
-              <button
-                type="button"
-                onClick={() => handleCurrencySwitch("MAD")}
-                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
-                  activeCurrency === "MAD"
-                    ? "bg-[#ffd233] text-black shadow-xs"
-                    : "text-muted-foreground dark:text-[#71717a] hover:text-foreground dark:hover:text-white"
-                }`}
-              >
-                MAD (DH)
-              </button>
-              <button
-                type="button"
-                onClick={() => handleCurrencySwitch("EUR")}
-                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
-                  activeCurrency === "EUR"
-                    ? "bg-[#ffd233] text-black shadow-xs"
-                    : "text-muted-foreground dark:text-[#71717a] hover:text-foreground dark:hover:text-white"
-                }`}
-              >
-                € EUR
-              </button>
-              <button
-                type="button"
-                onClick={() => handleCurrencySwitch("FREE")}
-                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
-                  activeCurrency === "FREE"
-                    ? "bg-emerald-500 text-white shadow-xs"
-                    : "text-muted-foreground dark:text-[#71717a] hover:text-foreground dark:hover:text-white"
-                }`}
-              >
-                Free
-              </button>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
-            <div>
-              <Input
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                placeholder="e.g. $49 or 1,500 MAD or Free Template"
-                className="h-10 text-xs font-bold bg-background dark:bg-[#141418] border-border dark:border-[#2a2a34] text-foreground dark:text-white focus:border-[#ffd233]"
-              />
-            </div>
-
-            {/* Quick Price Suggestions */}
-            <div className="flex items-center gap-1.5 flex-wrap">
-              <span className="text-[11px] text-muted-foreground dark:text-[#71717a] font-medium">Suggestions:</span>
-              {activeCurrency === "USD" && ["$29", "$49", "$99", "$149", "$299"].map((s) => (
-                <button
-                  key={s}
-                  type="button"
-                  onClick={() => setPrice(s)}
-                  className={`text-[11px] px-2 py-0.5 rounded-lg border transition-all ${
-                    price === s ? "bg-[#ffd233] text-black font-bold border-[#ffd233] shadow-xs" : "bg-card dark:bg-[#141418] border-border dark:border-[#2a2a34] text-muted-foreground dark:text-[#8e8e93] hover:text-foreground dark:hover:text-white"
-                  }`}
-                >
-                  {s}
-                </button>
-              ))}
-
-              {activeCurrency === "MAD" && ["500 MAD", "1,500 MAD", "2,500 MAD", "5,000 MAD"].map((s) => (
-                <button
-                  key={s}
-                  type="button"
-                  onClick={() => setPrice(s)}
-                  className={`text-[11px] px-2 py-0.5 rounded-lg border transition-all ${
-                    price === s ? "bg-[#ffd233] text-black font-bold border-[#ffd233] shadow-xs" : "bg-card dark:bg-[#141418] border-border dark:border-[#2a2a34] text-muted-foreground dark:text-[#8e8e93] hover:text-foreground dark:hover:text-white"
-                  }`}
-                >
-                  {s}
-                </button>
-              ))}
-
-              {activeCurrency === "EUR" && ["29 €", "49 €", "89 €", "149 €"].map((s) => (
-                <button
-                  key={s}
-                  type="button"
-                  onClick={() => setPrice(s)}
-                  className={`text-[11px] px-2 py-0.5 rounded-lg border transition-all ${
-                    price === s ? "bg-[#ffd233] text-black font-bold border-[#ffd233] shadow-xs" : "bg-card dark:bg-[#141418] border-border dark:border-[#2a2a34] text-muted-foreground dark:text-[#8e8e93] hover:text-foreground dark:hover:text-white"
-                  }`}
-                >
-                  {s}
-                </button>
-              ))}
-
-              {activeCurrency === "FREE" && ["Free Template", "Free Included", "Open Source"].map((s) => (
-                <button
-                  key={s}
-                  type="button"
-                  onClick={() => setPrice(s)}
-                  className={`text-[11px] px-2 py-0.5 rounded-lg border transition-all ${
-                    price === s ? "bg-emerald-500 text-white font-bold border-emerald-600 shadow-xs" : "bg-card dark:bg-[#141418] border-border dark:border-[#2a2a34] text-muted-foreground dark:text-[#8e8e93] hover:text-foreground dark:hover:text-white"
-                  }`}
-                >
-                  {s}
-                </button>
-              ))}
-            </div>
-          </div>
+        <div className="rounded-xl border border-emerald-500/25 bg-emerald-500/10 p-4 text-xs leading-5 text-emerald-800 dark:text-emerald-300">
+          {t("admin.workflowAccessNotice")}
         </div>
 
         {/* Category, Difficulty & Setup Time Grid */}

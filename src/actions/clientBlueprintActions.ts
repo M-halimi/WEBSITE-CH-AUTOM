@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { getClientSession } from "@/actions/clientAuthActions";
 import { checkWorkflowLimit } from "@/actions/subscriptionActions";
+import { canAccessWorkflow } from "@/lib/subscriptions";
 
 export async function getMarketplaceBlueprints() {
   try {
@@ -26,10 +27,20 @@ export async function getMarketplaceBlueprints() {
 export async function activateBlueprintForClient(workflowId: string, customConfig?: any) {
   const session = await getClientSession();
   if (!session) {
-    return { success: false, error: "Please log in to activate this workflow blueprint." };
+    return { success: false, authRequired: true, error: "Please log in to activate this workflow blueprint." };
   }
 
-  // Check subscription quota
+  const access = await canAccessWorkflow(session.id);
+  if (!access.canOpen) {
+    return {
+      success: false,
+      subscriptionRequired: true,
+      subscriptionState: access.state,
+      error: "An active SaaS subscription is required to activate workflows.",
+    };
+  }
+
+  // Plan-level workflow quotas are evaluated only after the central access check.
   const quota = await checkWorkflowLimit(session.id);
   if (!quota.allowed) {
     return {
@@ -40,8 +51,8 @@ export async function activateBlueprintForClient(workflowId: string, customConfi
   }
 
   try {
-    const blueprint = await prisma.workflow.findUnique({
-      where: { id: workflowId },
+    const blueprint = await prisma.workflow.findFirst({
+      where: { id: workflowId, status: "PUBLISHED" },
       include: {
         steps: { orderBy: { order: "asc" } },
         platforms: { include: { platform: true } },
@@ -177,14 +188,17 @@ export async function toggleDeployedWorkflowStatus(projectId: string, currentSta
   if (!session) {
     return { success: false, error: "Unauthorized." };
   }
+  if (!(await canAccessWorkflow(session.id)).canOpen) {
+    return { success: false, error: "An active subscription is required." };
+  }
 
   try {
     const newStatus = currentStatus === "APPROVED" || currentStatus === "COMPLETED" ? "PAUSED" : "APPROVED";
     
     if ((prisma as any).clientWorkflowRequest) {
       try {
-        await (prisma as any).clientWorkflowRequest.update({
-          where: { id: projectId },
+        await (prisma as any).clientWorkflowRequest.updateMany({
+          where: { id: projectId, userId: session.id },
           data: { status: newStatus },
         });
       } catch (e) {}
@@ -192,8 +206,8 @@ export async function toggleDeployedWorkflowStatus(projectId: string, currentSta
 
     // Fallback update on leadRequest
     try {
-      await prisma.leadRequest.update({
-        where: { id: projectId },
+      await prisma.leadRequest.updateMany({
+        where: { id: projectId, email: session.email },
         data: { status: newStatus },
       });
     } catch (e) {}

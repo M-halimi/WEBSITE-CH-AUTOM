@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { getClientSession } from "@/actions/clientAuthActions";
 import { checkWorkflowLimit } from "@/actions/subscriptionActions";
+import { verifyAdminSession } from "@/actions/authActions";
+import { getSubscriptionAccess } from "@/lib/subscriptions";
 import {
   WorkflowStepInput,
   WorkflowIntegrationInput,
@@ -173,14 +175,17 @@ export async function saveWorkflowRequestDraft(data: WorkflowRequestFormData) {
   if (!session) {
     return { success: false, error: "Please log in to save a draft." };
   }
+  if (!(await getSubscriptionAccess(session.id)).allowed) {
+    return { success: false, error: "An active subscription is required." };
+  }
 
   try {
     let draftId = "draft_" + Date.now();
     if ((prisma as any).clientWorkflowRequest) {
       try {
         if (data.id) {
-          const req = await (prisma as any).clientWorkflowRequest.update({
-            where: { id: data.id },
+          const req = await (prisma as any).clientWorkflowRequest.updateMany({
+            where: { id: data.id, userId: session.id },
             data: {
               title: data.title || "Draft Workflow",
               problemDescription: data.problemDescription,
@@ -188,7 +193,7 @@ export async function saveWorkflowRequestDraft(data: WorkflowRequestFormData) {
               status: "DRAFT",
             },
           });
-          draftId = req.id;
+          if (req.count > 0) draftId = data.id;
         } else {
           const req = await (prisma as any).clientWorkflowRequest.create({
             data: {
@@ -213,6 +218,7 @@ export async function saveWorkflowRequestDraft(data: WorkflowRequestFormData) {
 export async function getClientWorkflowRequests() {
   const session = await getClientSession();
   if (!session) return [];
+  if (!(await getSubscriptionAccess(session.id)).allowed) return [];
 
   let results: any[] = [];
 
@@ -279,6 +285,7 @@ export async function getClientWorkflowRequests() {
 export async function getClientWorkflowRequestById(requestId: string) {
   const session = await getClientSession();
   if (!session) return null;
+  if (!(await getSubscriptionAccess(session.id)).allowed) return null;
 
   // 1. Try relational table
   if ((prisma as any).clientWorkflowRequest) {
@@ -312,8 +319,8 @@ export async function getClientWorkflowRequestById(requestId: string) {
 
   // 2. Try LeadRequest fallback
   try {
-    const lead = await prisma.leadRequest.findUnique({
-      where: { id: requestId },
+      const lead = await prisma.leadRequest.findFirst({
+      where: { id: requestId, email: session.email },
       include: {
         workflow: {
           include: {
@@ -392,7 +399,8 @@ export async function getClientWorkflowRequestById(requestId: string) {
 
 export async function sendWorkflowMessage(requestId: string, messageText: string, isInternal: boolean = false) {
   const session = await getClientSession();
-  if (!session) {
+  const isAdmin = await verifyAdminSession();
+  if (!session && !isAdmin) {
     return { success: false, error: "Please log in to send a message." };
   }
 
@@ -401,14 +409,21 @@ export async function sendWorkflowMessage(requestId: string, messageText: string
   }
 
   try {
-    const isTeam = session.role === "ADMIN";
+    if (session && !(await getSubscriptionAccess(session.id)).allowed) {
+      return { success: false, error: "An active subscription is required." };
+    }
+    const ownedRequest = session
+      ? await prisma.clientWorkflowRequest.findFirst({ where: { id: requestId, userId: session.id }, select: { id: true } })
+      : await prisma.clientWorkflowRequest.findUnique({ where: { id: requestId }, select: { id: true } });
+    if (!ownedRequest) return { success: false, error: "Request not found." };
+    const isTeam = isAdmin && !session;
     const senderRole = isTeam ? "TEAM" : "CLIENT";
-    const senderName = session.name || (isTeam ? "Automation Architect" : "Client");
+    const senderName = session?.name || (isTeam ? "Automation Architect" : "Client");
 
     let message: any = {
       id: "msg_" + Date.now(),
       requestId,
-      senderId: session.id,
+      senderId: session?.id || null,
       senderRole,
       senderName,
       message: messageText.trim(),
@@ -421,7 +436,7 @@ export async function sendWorkflowMessage(requestId: string, messageText: string
         message = await (prisma as any).clientWorkflowMessage.create({
           data: {
             requestId,
-            senderId: session.id,
+            senderId: session?.id || null,
             senderRole,
             senderName,
             message: messageText.trim(),
@@ -441,6 +456,10 @@ export async function sendWorkflowMessage(requestId: string, messageText: string
 }
 
 export async function generateAIWorkflowSuggestions(problemDescription: string, businessType?: string) {
+  const session = await getClientSession();
+  if (!session || !(await getSubscriptionAccess(session.id)).allowed) {
+    return { success: false, error: "An active subscription is required." };
+  }
   if (!problemDescription || problemDescription.trim().length < 10) {
     return {
       success: false,

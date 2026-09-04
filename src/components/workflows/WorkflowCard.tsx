@@ -12,11 +12,12 @@ import {
   Layers,
   Check,
   Clock,
-  Tag as TagIcon
+  ShieldCheck
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { PlatformIcon } from "@/components/ui/platform-icon";
 import { isValidImageUrl } from "@/lib/utils";
+import { useI18n } from "@/components/i18n/I18nProvider";
+import type { SubscriptionState } from "@/lib/subscriptions";
 
 interface WorkflowCardProps {
   workflow: {
@@ -52,9 +53,17 @@ interface WorkflowCardProps {
   };
   rank?: number;
   illustrationIndex?: number;
+  isAuthenticated?: boolean;
+  subscriptionState?: SubscriptionState;
 }
 
-export function WorkflowCard({ workflow, illustrationIndex = 0 }: WorkflowCardProps) {
+export function WorkflowCard({
+  workflow,
+  illustrationIndex = 0,
+  isAuthenticated = false,
+  subscriptionState = "NONE",
+}: WorkflowCardProps) {
+  const { t } = useI18n();
   const [copied, setCopied] = React.useState(false);
   const [imgError, setImgError] = React.useState(false);
   const stepCount = workflow.stepsCount || workflow.steps?.length || 4;
@@ -76,25 +85,40 @@ export function WorkflowCard({ workflow, illustrationIndex = 0 }: WorkflowCardPr
     const diff = (difficulty || "BEGINNER").toUpperCase();
     if (diff === "ADVANCED") {
       return {
-        label: "Advanced",
+        label: t("workflow.advanced"),
         class: "bg-purple-500/15 text-purple-600 dark:text-purple-400 border-purple-500/30",
       };
     }
     if (diff === "INTERMEDIATE") {
       return {
-        label: "Intermediate",
+        label: t("workflow.intermediate"),
         class: "bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30",
       };
     }
     return {
-      label: "Beginner",
+      label: t("workflow.beginner"),
       class: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30",
     };
   };
 
   const difficultyInfo = getDifficultyBadge(workflow.difficulty);
-  const displayPrice = workflow.price || "Free Template";
-  const isFree = displayPrice.toLowerCase().includes("free");
+  const hasAccess = subscriptionState === "ACTIVE";
+  const isExpired = subscriptionState === "EXPIRED";
+  const accessLabel = hasAccess
+    ? t("workflow.included")
+    : isExpired
+      ? t("workflow.expired")
+      : isAuthenticated
+        ? t("workflow.required")
+        : t("workflow.available");
+  const actionLabel = hasAccess
+    ? t("workflow.open")
+    : isExpired
+      ? t("workflow.renew")
+      : isAuthenticated
+        ? t("workflow.viewPlans")
+        : t("workflow.subscribeAccess");
+  const actionHref = hasAccess ? `/workflows/${workflow.slug}` : "/plans";
 
   return (
     <div className="group relative flex flex-col justify-between rounded-3xl bg-card border border-border p-5 modern-saas-card shadow-sm hover:shadow-xl transition-all duration-300">
@@ -222,7 +246,7 @@ export function WorkflowCard({ workflow, illustrationIndex = 0 }: WorkflowCardPr
           {workflow.featured && (
             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#ffd233] text-black border border-amber-300 shadow-xs">
               <Sparkles className="h-2.5 w-2.5" />
-              Featured
+              {t("workflow.featured")}
             </span>
           )}
         </div>
@@ -231,7 +255,7 @@ export function WorkflowCard({ workflow, illustrationIndex = 0 }: WorkflowCardPr
         <div className="absolute bottom-3 right-3 z-20">
           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-black/70 text-white border border-white/20 shadow-xs backdrop-blur-md">
             <Layers className="h-2.5 w-2.5 text-[#ffd233]" />
-            {stepCount} steps
+            {t("workflow.steps", { count: stepCount })}
           </span>
         </div>
       </div>
@@ -267,22 +291,21 @@ export function WorkflowCard({ workflow, illustrationIndex = 0 }: WorkflowCardPr
         </p>
       </div>
 
-      {/* 3. PRICE ROW */}
+      {/* 3. SUBSCRIPTION ACCESS ROW — workflow pricing belongs on /plans */}
       <div className="pt-3 pb-1 flex items-center justify-between border-t border-border/50 mt-3">
         <div className="flex items-center gap-1.5">
-          <TagIcon className="h-3.5 w-3.5 text-muted-foreground" />
-          <span className="text-[11px] text-muted-foreground font-medium">Price:</span>
-          <span className={`text-xs font-extrabold px-2 py-0.5 rounded-md ${
-            isFree 
-              ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30" 
-              : "bg-amber-500/15 text-amber-700 dark:text-[#ffd233] border border-amber-500/30"
+          <ShieldCheck className={`h-3.5 w-3.5 ${hasAccess ? "text-emerald-500" : "text-amber-500"}`} />
+          <span className={`text-[11px] font-extrabold px-2 py-0.5 rounded-md border ${
+            hasAccess
+              ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30"
+              : "bg-amber-500/15 text-amber-700 dark:text-[#ffd233] border-amber-500/30"
           }`}>
-            {displayPrice}
+            {accessLabel}
           </span>
         </div>
 
         <span className="text-[10px] text-muted-foreground">
-          {workflow.views > 0 ? `${workflow.views} views` : "Ready to use"}
+          {workflow.views > 0 ? t("workflow.views", { count: workflow.views }) : t("workflow.ready")}
         </span>
       </div>
 
@@ -319,19 +342,19 @@ export function WorkflowCard({ workflow, illustrationIndex = 0 }: WorkflowCardPr
         {/* Action Button: Explore Blueprint & Share */}
         <div className="flex items-center gap-1.5">
           <Link
-            href={`/workflows/${workflow.slug}`}
+            href={actionHref}
             className="h-8 px-3.5 rounded-full inline-flex items-center justify-center text-xs font-bold bg-[#ffd233] hover:bg-[#f5c71a] text-black shadow-xs gap-1 transition-transform active:scale-95"
           >
-            <span>Explore</span>
-            <ArrowRight className="h-3.5 w-3.5" />
+            <span>{actionLabel}</span>
+            <ArrowRight className="rtl-flip h-3.5 w-3.5" />
           </Link>
 
           <button
             type="button"
             onClick={handleShare}
-            aria-label="Share workflow link"
+            aria-label={t("workflow.share")}
             className="h-8 w-8 rounded-full border border-border bg-background hover:bg-muted text-muted-foreground hover:text-foreground flex items-center justify-center transition-colors"
-            title="Share blueprint link"
+            title={t("workflow.shareTitle")}
           >
             {copied ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <MoreHorizontal className="h-4 w-4" />}
           </button>

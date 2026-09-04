@@ -10,7 +10,11 @@ async function main() {
   const passwordHash = await bcrypt.hash("admin123456", 10);
   const admin = await prisma.user.upsert({
     where: { email: "admin@workflows.com" },
-    update: {},
+    update: {
+      name: "Super Admin",
+      passwordHash,
+      role: "ADMIN",
+    },
     create: {
       email: "admin@workflows.com",
       name: "Super Admin",
@@ -19,6 +23,20 @@ async function main() {
     },
   });
   console.log(`✅ Admin created: ${admin.email}`);
+
+  // Subscription plans are persisted up front; public plan reads never mutate data.
+  const subscriptionPlans = [
+    { name: "STARTER", slug: "starter", tagline: "Ideal for small businesses starting their automation journey.", price: 49, currency: "USD", billingPeriod: "MONTHLY", workflowLimit: 1, supportLevel: "Basic Consultation & Email", isPopular: false, features: ["1 Active Production Workflow", "WhatsApp & Shopify Automated Sync", "Standard Turnkey Setup (48h)"] },
+    { name: "BUSINESS", slug: "business", tagline: "Best for growing businesses scaling sales, orders & customer support.", price: 149, currency: "USD", billingPeriod: "MONTHLY", workflowLimit: 5, supportLevel: "Priority WhatsApp & Engineer Support", isPopular: true, features: ["5 Active Production Workflows", "AI Customer Support Agent", "Priority 24-Hour Turnkey Delivery"] },
+    { name: "PRO", slug: "pro", tagline: "For high-volume commerce teams needing enterprise automation power.", price: 399, currency: "USD", billingPeriod: "MONTHLY", workflowLimit: 999, supportLevel: "Dedicated Senior Automation Architect", isPopular: false, features: ["Unlimited Production Workflows", "Custom ERP and Database Integration", "Custom SLA"] },
+  ];
+  for (const plan of subscriptionPlans) {
+    await prisma.plan.upsert({
+      where: { slug: plan.slug },
+      update: {},
+      create: { ...plan, features: JSON.stringify(plan.features), active: true },
+    });
+  }
 
   // 2. Create Categories
   const categoriesData = [
